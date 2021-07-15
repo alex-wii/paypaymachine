@@ -1,0 +1,4 @@
+2021-07-14 10:58:41,736 INFO trainFactory {'ordernum': 'a1000', 'resp': '010002000300040000500'},A
+2021-07-14 10:58:44,741 INFO 5trainFactory done {'ordernum': 'a1000', 'resp': '010002000300040000500'},A
+2021-07-14 10:58:44,800 INFO trainFactory {'ordernum': 'a1000', 'resp': '010002000300040000500'},B
+2021-07-14 10:58:47,802 INFO 5trainFactory done {'ordernum': 'a1000', 'resp': '010002000300040000500'},B
