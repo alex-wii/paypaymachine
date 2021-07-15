@@ -42,6 +42,7 @@ def processA(bitArray,order):
             
             logger.info(f'A:do {sta} A {sec} sec')
             p = subprocess.run(['python3','s1.py',f'A',f'{sta}',f'{sec}'])
+            # p = subprocess.run(['python3','s1.py',f'A',f'{sta}',f'{sec}'])
         time.sleep(2)
         bitArray[0]=0
         logger.info(f'A:processA-E {list(bitArray)},order={o}')
