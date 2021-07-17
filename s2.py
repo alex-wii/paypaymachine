@@ -38,76 +38,96 @@ time4=int(timedata[14:16])
 time5=int(timedata[18:20])
 def Atrain():   
         if time1 !=0 :
+            time.sleep(0.1)
             doorA.output(J33.pin4,0) 
-            time.sleep(1)
+            time.sleep(0.1)
             pump.output(J33.pin4,0) 
             time.sleep(time1)
             pump.output(J33.pin4,1)
+            time.sleep(0.1)
             doorA.output(J33.pin4,1)
         if time2 !=0 :
+            time.sleep(0.1)
             doorA.output(J33.pin6,0) 
-            time.sleep(1)
+            time.sleep(0.1)
             pump.output(J33.pin6,0)
             time.sleep(time2)
             pump.output(J33.pin6,1)
+            time.sleep(0.1)
             doorA.output(J33.pin6,1)
         if time3 !=0 :
+            time.sleep(0.1)
             doorA.output(J33.pin8,0)  
-            time.sleep(1)
+            time.sleep(0.1)
             pump.output(J33.pin8,0)
             time.sleep(time3)
             pump.output(J33.pin8,1)
+            time.sleep(0.1)
             doorA.output(J33.pin8,1)
         if time4 !=0 :
+            time.sleep(0.1)
             doorA.output(J34.pin2,0) 
-            time.sleep(1)
+            time.sleep(0.1)
             pump.output(J34.pin2,0)
             time.sleep(time4)
             pump.output(J34.pin2,1)
+            time.sleep(0.1)
             doorA.output(J34.pin2,1)
         if time5 !=0 :
+            time.sleep(0.1)
             doorA.output(J34.pin4,0)  
-            time.sleep(1)
+            time.sleep(0.1)
             pump.output(J34.pin4,0)
             time.sleep(time5)
             pump.output(J34.pin4,1)
+            time.sleep(0.1)
             doorA.output(J34.pin4,1)
 
 def Btrain():
         if time1 !=0 :
+            time.sleep(0.1)
             doorB.output(J33.pin4,0) 
-            time.sleep(1)
+            time.sleep(0.1)
             pump.output(J33.pin4,0) 
             time.sleep(time1)
             pump.output(J33.pin4,1)
+            time.sleep(0.1)
             doorB.output(J33.pin4,1)
         if time2 !=0 :
+            time.sleep(0.1)
             doorB.output(J33.pin6,0) 
-            time.sleep(1)
+            time.sleep(0.1)
             pump.output(J33.pin6,0)
             time.sleep(time2)
             pump.output(J33.pin6,1)
+            time.sleep(0.1)
             doorB.output(J33.pin6,1)
         if time3 !=0 :
+            time.sleep(0.1)
             doorB.output(J33.pin8,0)  
-            time.sleep(1)
+            time.sleep(0.1)
             pump.output(J33.pin8,0)
             time.sleep(time3)
             pump.output(J33.pin8,1)
-            doorB.output(11,1)
+            time.sleep(0.1)
+            doorB.output(J33.pin8,1)
         if time4 !=0 :
+            time.sleep(0.1)
             doorB.output(J34.pin2,0) 
-            time.sleep(1)
+            time.sleep(0.1)
             pump.output(J34.pin2,0)
             time.sleep(time4)
             pump.output(J34.pin2,1)
+            time.sleep(0.1)
             doorB.output(J34.pin2,1)
         if time5 !=0 :
+            time.sleep(0.1)
             doorB.output(J34.pin4,0)  
-            time.sleep(1)
+            time.sleep(0.1)
             pump.output(J34.pin4,0)
             time.sleep(time5)
             pump.output(J34.pin4,1)
+            time.sleep(0.1)
             doorB.output(J34.pin4,1)
         
         
@@ -115,7 +135,7 @@ def main():
     
     if time1 == 0 and time2 == 0 and time3 == 0 and time4 == 0 and time5 == 0:
         sys.exit(1)
-        # os.mknod('s2.done')
+        open("./done/s2.done", 'w').close()
         
     usbpath =""
     with open("./TrackUsb.json", "r") as obj1:
@@ -135,20 +155,22 @@ def main():
             ser.write(bytes(Track.PositionS2 + "\r\n" , "utf-8"))
             time.sleep(0.1) 
             ser.write(bytes(Track.Move + "\r\n" , "utf-8"))
-            time.sleep(8)   #1:5 2:10 3:25
-            ser.flushInput() 
-            ser.write(bytes(Track.CheckSign + "\r\n" , "utf-8"))
-            time.sleep(0.1)
-            address=ser.read(13).decode("utf-8")
-            # print(address)
-            na=address[11:13]
-            # print(na)
-            bc = " ".join(format(ord(c), "b") for c in na)
-            # print(bc,type(bc))
-            bin=bc[13]
-            # print(bin,type(bin))
-            if  bin == "1":
-                Atrain()
+            while True:
+                ser.flushInput() 
+                ser.write(bytes(Track.CheckSign + "\r\n" , "utf-8"))
+                time.sleep(0.1)
+                address=ser.read(13).decode("utf-8")
+                # print(address)
+                na=address[11:13]
+                # print(na)
+                bc = " ".join(format(ord(c), "b") for c in na)
+                # print(bc,type(bc))
+                if len(bc) == 15:
+                    bin=bc[13]
+                    # print(bin,type(bin))
+                    if  bin == "1":
+                        break
+            Atrain()
             os.remove("./run/s2A.run")
     with serial.Serial() as ser2:
         if track == "B":
@@ -162,20 +184,22 @@ def main():
             ser2.write(bytes(Track.PositionS2 + "\r\n" , "utf-8"))
             time.sleep(0.1) 
             ser2.write(bytes(Track.Move + "\r\n" , "utf-8"))
-            time.sleep(8)  #1:5 2:10 3:25
-            ser2.flushInput() 
-            ser2.write(bytes(Track.CheckSign + "\r\n" , "utf-8"))
-            time.sleep(0.1)
-            address=ser2.read(13).decode("utf-8")
-            # print(address)
-            na=address[11:13]
-            # print(na)
-            bc = " ".join(format(ord(c), "b") for c in na)
-            # print(bc,type(bc))
-            bin=bc[13]
-            # print(bin,type(bin))
-            if  bin == "1":
-                Btrain()
+            while True:
+                ser2.flushInput() 
+                ser2.write(bytes(Track.CheckSign + "\r\n" , "utf-8"))
+                time.sleep(0.1)
+                address=ser2.read(13).decode("utf-8")
+                # print(address)
+                na=address[11:13]
+                # print(na)
+                bc = " ".join(format(ord(c), "b") for c in na)
+                # print(bc,type(bc))
+                if len(bc) == 15:
+                    bin=bc[13]
+                    # print(bin,type(bin))
+                    if  bin == "1":
+                        break
+            Btrain()
             os.remove("./run/s2B.run")
     os.remove("./run/s2.run")
     open("./done/s2.done", 'w').close()

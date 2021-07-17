@@ -47,6 +47,10 @@ def main():
             ser.write(bytes(Track.PositionS5 + "\r\n" , "utf-8"))
             time.sleep(0.1) 
             ser.write(bytes(Track.Move + "\r\n" , "utf-8"))
+        if CMD == "6" :
+            ser.write(bytes(Track.PositionEnd + "\r\n" , "utf-8"))
+            time.sleep(0.1) 
+            ser.write(bytes(Track.Move + "\r\n" , "utf-8"))
             
 if __name__ == "__main__":
     main()

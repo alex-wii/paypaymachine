@@ -29,8 +29,7 @@ def I2CWriteBoardID():
     pcaW2a=PCA9675I2C(address=0x2a,busnum=1)
     pcaW2c=PCA9675I2C(address=0x2c,busnum=1)
     pcaW2e=PCA9675I2C(address=0x2e,busnum=1)
-    for i in range(16):
-            # print(f'setup pin{i} is 0')    
+    for i in range(16):   
             pcaW11.setup(i,0)
             pcaW15.setup(i,0)
             pcaW18.setup(i,0)
@@ -39,8 +38,7 @@ def I2CWriteBoardID():
             pcaW2a.setup(i,0)
             pcaW2c.setup(i,0)
             pcaW2e.setup(i,0)
-    for i in range(16):
-            # print(f'setup pin{i} is 1')    
+    for i in range(16): 
             pcaW11.output(i,1)
             pcaW15.output(i,1)
             pcaW18.output(i,1)
@@ -79,34 +77,30 @@ def MoveToStart(path):
         ser2.baudrate = 57600
         ser2.port = path
         ser2.open()
-        time.sleep(15)
-        ser2.flushInput() 
-        ser2.write(bytes(Track.CheckSign + "\r\n" , "utf-8"))
-        time.sleep(0.1)
-        address=ser2.read(13).decode("utf-8")
-        na=address[11:13]
-        bc = " ".join(format(ord(c), "b") for c in na)
-        bin=bc[13]
-        if  bin == "1":
-            Moving()
+        while True:
+            ser2.flushInput() 
+            ser2.write(bytes(Track.CheckSign + "\r\n" , "utf-8"))
+            time.sleep(0.1)
+            address=ser2.read(13).decode("utf-8")
+            na=address[11:13]
+            bc = " ".join(format(ord(c), "b") for c in na)
+            if len(bc) == 15:
+                bin=bc[13]
+                if  bin == "1":
+                    break
+        Moving()
 
 def findPrintby6790(comportlist):
 
     printerPath=""
     printerVid=6790
     for e in comportlist:
-        # print(e.vid,type(e.vid))
-        
         if e.vid == printerVid:
             printerPath=e.device
-            # print('break')
             break
-        # print('alex')
-        
-    # print(printerPath)
     return printerPath
 ppath=findPrintby6790(x)
-# print(ppath)
+
 with serial.Serial() as ser2:
     ser2.baudrate = 57600
     ser2.port = ppath
@@ -123,10 +117,10 @@ stream = os.popen("ls /dev/ttyUSB*")
 output = stream.read()
 output=output.strip()
 pathlist = comportlist
-# print("=======")
+
 for usbpath in pathlist :
     checkportmovetostart(usbpath)
-# print(USBdic)
+
 if os.path.isfile("./TrackUsb.json"):
     pass
 else:
@@ -140,13 +134,10 @@ with open("./TrackUsb.json", "w") as obj:
     json.dump(USBdic,obj,indent=4,sort_keys=True)
 with open("./PrinterUsb.json", "w") as obj:
     json.dump(ppath,obj)
-    
 for usbpath in pathlist :
     MoveToStart(usbpath)
-
-
-I2CWriteBoardID()
-I2CReadBoardID()
+# I2CWriteBoardID()
+# I2CReadBoardID()
 
 
 if os.path.isdir("./run"):

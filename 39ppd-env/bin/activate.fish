@@ -29,7 +29,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/home/pi/gitcode/johnnyJobs/39ppd-env"
+set -gx VIRTUAL_ENV "/home/pi/git/paypaymachine/39ppd-env"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH

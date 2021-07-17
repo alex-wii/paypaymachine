@@ -1,4 +1,5 @@
 from time import sleep
+import time
 # from setting import tdic1,tdic2
 import sys
 from AllConfig import J2,J3,J17,J33,J34,Track,Icedata
@@ -21,14 +22,17 @@ pca.output(J33.pin4,1)  ### 落冰推桿    ###
 track=sys.argv[1]
 
 def main():
-    if track == "A":
-        pca.output(J17.pin2,0)
-        if pcaR.input(J3.pin8) != 0 :
-            pca.output(J17.pin2,1)
-    if track == "B":
-        pca.output(J17.pin6,0)
-        if pcaR.input(J3.pin8) != 0 :
-            pca.output(J17.pin6,1)
+        if track == "A":
+            pca.output(J17.pin2,0)
+            while True:
+                if pcaR.input(J3.pin8) != 0 :
+                    pca.output(J17.pin2,1)
+                    break
+            print("1")
+        if track == "B":
+            pca.output(J17.pin6,0)
+            if pcaR.input(J3.pin8) != 0 :
+                pca.output(J17.pin6,1)
 
 if __name__ == "__main__":
     main()

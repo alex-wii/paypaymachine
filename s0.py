@@ -54,53 +54,7 @@ def main():
                 ser.write(bytes(Track.PositionStart + "\r\n" , "utf-8"))
                 time.sleep(0.1) 
                 ser.write(bytes(Track.Move + "\r\n" , "utf-8"))
-                time.sleep(5)   #1:5 2:10 3:25
-                ser.flushInput() 
-                ser.write(bytes(Track.CheckSign + "\r\n" , "utf-8"))
-                time.sleep(0.1)
-                address=ser.read(13).decode("utf-8")
-                # print(address)
-                na=address[11:13]
-                # print(na)
-                bc = " ".join(format(ord(c), "b") for c in na)
-                # print(bc,type(bc))
-                bin=bc[13]
-                # print(bin,type(bin))
-                if  bin == "1":
-                    while pcaR.input(J3.pin8) != 0 :
-                        sys.exit(1) ###A道已經有杯子###
-                    while pcaR.input(J3.pin8) == 0 :
-                        if pcaR.input(J3.pin2) != 0 :
-                            pca.output(J17.pin2,0)      ### 動作 ###
-                            if pcaR.input(J3.pin8) != 0 :
-                                pca.output(J17.pin2,1)  ### 關閉落杯器  ###
-                                time.sleep(1)
-                                ser.write(bytes(Track.PositionIce + "\r\n" , "utf-8"))
-                                time.sleep(0.1) 
-                                ser.write(bytes(Track.Move + "\r\n" , "utf-8"))
-                                time.sleep(5)   #1:5 2:10 3:25
-                                ser.flushInput() 
-                                ser.write(bytes(Track.CheckSign + "\r\n" , "utf-8"))
-                                time.sleep(0.1)
-                                address=ser.read(13).decode("utf-8")
-                                # print(address)
-                                na=address[11:13]
-                                # print(na)
-                                bc = " ".join(format(ord(c), "b") for c in na)
-                                # print(bc,type(bc))
-                                bin=bc[13]
-                                # print(bin,type(bin))
-                                if  bin == "1":
-                                    pca.output(J33.pin2,1)  ###電磁閥開啟###
-                                    time.sleep(opentime)   ###0,3,6,9###
-                                    pca.output(J33.pin2,0)  ###電磁閥關閉###
-                                    os.remove("./run/s0A.run")
-            if pcaR.input(J3.pin2) == 0 :
-                if pcaR.input(J3.pin5) != 0 :
-                    ser.write(bytes(Track.PositionCup2 + "\r\n" , "utf-8"))
-                    time.sleep(0.1) 
-                    ser.write(bytes(Track.Move + "\r\n" , "utf-8"))
-                    time.sleep(5)   #1:5 2:10 3:25
+                while True:
                     ser.flushInput() 
                     ser.write(bytes(Track.CheckSign + "\r\n" , "utf-8"))
                     time.sleep(0.1)
@@ -110,37 +64,95 @@ def main():
                     # print(na)
                     bc = " ".join(format(ord(c), "b") for c in na)
                     # print(bc,type(bc))
-                    bin=bc[13]
-                    # print(bin,type(bin))
-                    if  bin == "1":
-                        while pcaR.input(J3.pin8) != 0 :
-                            sys.exit(1) ###A道已經有杯子了###
-                        while pcaR.input(J3.pin8) == 0 :
-                            if pcaR.input(J3.pin5) != 0 :   
-                                pca.output(J17.pin4,0)  ### 動作 ###
-                                if pcaR.input(J3.pin8) != 0 :
-                                    pca.output(J17.pin4,1)  ### 關閉落杯器 ###
-                                    time.sleep(1)
-                                    ser.write(bytes(Track.PositionIce + "\r\n" , "utf-8"))
-                                    time.sleep(0.1) 
-                                    ser.write(bytes(Track.Move + "\r\n" , "utf-8"))
-                                    time.sleep(5)   #1:5 2:10 3:25
-                                    ser.flushInput() 
-                                    ser.write(bytes(Track.CheckSign + "\r\n" , "utf-8"))
-                                    time.sleep(0.1)
-                                    address=ser.read(13).decode("utf-8")
-                                    # print(address)
-                                    na=address[11:13]
-                                    # print(na)
-                                    bc = " ".join(format(ord(c), "b") for c in na)
-                                    # print(bc,type(bc))
-                                    bin=bc[13]
-                                    # print(bin,type(bin))
-                                    if  bin == "1":
-                                        pca.output(J33.pin2,1)  ###電磁閥開啟###
-                                        time.sleep(opentime)   ###0,3,6,9###
-                                        pca.output(J33.pin2,0)  ###電磁閥關閉###
-                                        os.remove("./run/s0A.run")
+                    if len(bc) == 15:
+                        bin=bc[13]
+                        # print(bin,type(bin))
+                        if  bin == "1":
+                            break
+                while pcaR.input(J3.pin8) != 0 :
+                    sys.exit(1) ###A道已經有杯子###
+                while pcaR.input(J3.pin8) == 0 :
+                    if pcaR.input(J3.pin2) != 0 :
+                        pca.output(J17.pin2,0)      ### 捲杯器動作 ###
+                        pca.output(J33.pin4,1)      ### 推桿到A ###
+                        while True:
+                            if pcaR.input(J3.pin8) != 0 :
+                                pca.output(J17.pin2,1)  ### 關閉落杯器  ###
+                                break
+                        time.sleep(1)
+                        ser.write(bytes(Track.PositionIce + "\r\n" , "utf-8"))
+                        time.sleep(0.1) 
+                        ser.write(bytes(Track.Move + "\r\n" , "utf-8"))
+                        while True:
+                            ser.flushInput() 
+                            ser.write(bytes(Track.CheckSign + "\r\n" , "utf-8"))
+                            time.sleep(0.1)
+                            address=ser.read(13).decode("utf-8")
+                            # print(address)
+                            na=address[11:13]
+                            # print(na)
+                            bc = " ".join(format(ord(c), "b") for c in na)
+                            # print(bc,type(bc))
+                            if len(bc) == 15:
+                                bin=bc[13]
+                                # print(bin,type(bin))
+                                if  bin == "1":
+                                    break
+                        time.sleep(1)
+                        pca.output(J33.pin2,0)  ###電磁閥開啟###
+                        time.sleep(opentime)   ###0,3,6,9###
+                        pca.output(J33.pin2,1)  ###電磁閥關閉###
+                        os.remove("./run/s0A.run")
+            if pcaR.input(J3.pin2) == 0 :
+                ser.write(bytes(Track.PositionCup2 + "\r\n" , "utf-8"))
+                time.sleep(0.1) 
+                ser.write(bytes(Track.Move + "\r\n" , "utf-8"))
+                while True:
+                    ser.flushInput() 
+                    ser.write(bytes(Track.CheckSign + "\r\n" , "utf-8"))
+                    time.sleep(0.1)
+                    address=ser.read(13).decode("utf-8")
+                    # print(address)
+                    na=address[11:13]
+                    # print(na)
+                    bc = " ".join(format(ord(c), "b") for c in na)
+                    # print(bc,type(bc))
+                    if len(bc) == 15:
+                        bin=bc[13]
+                        # print(bin,type(bin))
+                        if  bin == "1":
+                            break
+                if pcaR.input(J3.pin5) != 0 :   
+                    pca.output(J17.pin4,0)      ### 捲杯器動作 ###
+                    pca.output(J33.pin4,1)      ### 推桿到A ###
+                    while True:
+                        if pcaR.input(J3.pin8) != 0 :
+                            pca.output(J17.pin4,1)  ### 關閉落杯器 ###
+                            break
+                    time.sleep(1)
+                    ser.write(bytes(Track.PositionIce + "\r\n" , "utf-8"))
+                    time.sleep(0.1) 
+                    ser.write(bytes(Track.Move + "\r\n" , "utf-8"))
+                    while True:
+                        ser.flushInput() 
+                        ser.write(bytes(Track.CheckSign + "\r\n" , "utf-8"))
+                        time.sleep(0.1)
+                        address=ser.read(13).decode("utf-8")
+                        # print(address)
+                        na=address[11:13]
+                        # print(na)
+                        bc = " ".join(format(ord(c), "b") for c in na)
+                        # print(bc,type(bc))
+                        if len(bc) == 15:
+                            bin=bc[13]
+                            # print(bin,type(bin))
+                            if  bin == "1":
+                                break
+                    time.sleep(1)
+                    pca.output(J33.pin2,0)  ###電磁閥開啟###
+                    time.sleep(opentime)   ###0,3,6,9###
+                    pca.output(J33.pin2,1)  ###電磁閥關閉###
+            os.remove("./run/s0A.run")
     with serial.Serial() as ser2:
         if track == "B":
             if os.path.isfile("./run/s0A.run"):
@@ -154,57 +166,7 @@ def main():
                 ser2.write(bytes(Track.PositionStart + "\r\n" , "utf-8"))
                 time.sleep(0.1) 
                 ser2.write(bytes(Track.Move + "\r\n" , "utf-8"))
-                time.sleep(5)   #1:5 2:10 3:25
-                ser2.flushInput() 
-                ser2.write(bytes(Track.CheckSign + "\r\n" , "utf-8"))
-                time.sleep(0.1)
-                address=ser2.read(13).decode("utf-8")
-                # print(address)
-                na=address[11:13]
-                # print(na)
-                bc = " ".join(format(ord(c), "b") for c in na)
-                # print(bc,type(bc))
-                bin=bc[13]
-                # print(bin,type(bin))
-                if  bin == "1":
-                    while pcaR.input(J2.pin8) != 0 :
-                        sys.exit(1) ###B道已經有杯子###
-                    while pcaR.input(J2.pin8) == 0 :
-                        if pcaR.input(J2.pin2) != 0 :  
-                            pca.output(J17.pin6,0)    ### 動作 ###
-                            if pcaR.input(J2.pin8) != 0 :
-                                pca.output(J17.pin6,1)  ### 關閉落杯器 ###
-                                time.sleep(1)
-                                ser2.write(bytes(Track.PositionIce + "\r\n" , "utf-8"))
-                                time.sleep(0.1) 
-                                ser2.write(bytes(Track.Move + "\r\n" , "utf-8"))
-                                time.sleep(5)   #1:5 2:10 3:25
-                                ser2.flushInput() 
-                                ser2.write(bytes(Track.CheckSign + "\r\n" , "utf-8"))
-                                time.sleep(0.1)
-                                address=ser2.read(13).decode("utf-8")
-                                # print(address)
-                                na=address[11:13]
-                                # print(na)
-                                bc = " ".join(format(ord(c), "b") for c in na)
-                                # print(bc,type(bc))
-                                bin=bc[13]
-                                # print(bin,type(bin))
-                                if  bin == "1":
-                                    pca.output(J33.pin2,1)  ###電磁閥開啟###
-                                    time.sleep(1)
-                                    pca.output(J33.pin4,0)  ###開啟推桿使B道落冰###
-                                    time.sleep(opentime)   ###0,3,6,9###
-                                    pca.output(J33.pin2,0)  ###電磁閥關閉###
-                                    time.sleep(1)
-                                    pca.output(J33.pin4,1)  ###推桿關閉###
-                                    os.remove("./run/s0B.run")
-            if pcaR.input(J2.pin2) == 0 :
-                if pcaR.input(J2.pin5) != 0 :
-                    ser2.write(bytes(Track.PositionCup2 + "\r\n" , "utf-8"))
-                    time.sleep(0.1) 
-                    ser2.write(bytes(Track.Move + "\r\n" , "utf-8"))
-                    time.sleep(5)   #1:5 2:10 3:25
+                while True:
                     ser2.flushInput() 
                     ser2.write(bytes(Track.CheckSign + "\r\n" , "utf-8"))
                     time.sleep(0.1)
@@ -214,41 +176,99 @@ def main():
                     # print(na)
                     bc = " ".join(format(ord(c), "b") for c in na)
                     # print(bc,type(bc))
-                    bin=bc[13]
-                    # print(bin,type(bin))
-                    if  bin == "1":
-                        while pcaR.input(J2.pin8) != 0 :
-                            sys.exit(1) ### B道已經有杯子 ###
-                        while pcaR.input(J2.pin8) == 0 :
-                            if pcaR.input(J2.pin5) != 0 :   
-                                pca.output(J17.pin8,0)  ### 動作 ###
+                    if len(bc) == 15:
+                        bin=bc[13]
+                        # print(bin,type(bin))
+                        if  bin == "1":
+                            break
+                while pcaR.input(J2.pin8) != 0 :
+                    sys.exit(1) ###B道已經有杯子###
+                while pcaR.input(J2.pin8) == 0 :
+                    if pcaR.input(J2.pin2) != 0 :  
+                        pca.output(J17.pin6,0)    ### 捲杯器動作 ###
+                        pca.output(J33.pin4,0)      ### 推桿到B ###
+                        while True:
+                            if pcaR.input(J2.pin8) != 0 :
+                                pca.output(J17.pin6,1)  ### 關閉落杯器 ###
+                                break
+                        time.sleep(1)
+                        ser2.write(bytes(Track.PositionIce + "\r\n" , "utf-8"))
+                        time.sleep(0.1) 
+                        ser2.write(bytes(Track.Move + "\r\n" , "utf-8"))
+                        time.sleep(5)   #1:5 2:10 3:25
+                        while True:
+                            ser2.write(bytes(Track.CheckSign + "\r\n" , "utf-8"))
+                            time.sleep(0.1)
+                            address=ser2.read(13).decode("utf-8")
+                            # print(address)
+                            na=address[11:13]
+                            # print(na)
+                            bc = " ".join(format(ord(c), "b") for c in na)
+                            # print(bc,type(bc))
+                            if len(bc) == 15:
+                                bin=bc[13]
+                                # print(bin,type(bin))
+                                if  bin == "1":
+                                    break
+                        time.sleep(1)
+                        pca.output(J33.pin2,0)  ###電磁閥開啟###
+                        time.sleep(opentime)   ###0,3,6,9###
+                        pca.output(J33.pin2,1)  ###電磁閥關閉###
+                        os.remove("./run/s0B.run")
+            if pcaR.input(J2.pin2) == 0 :
+                if pcaR.input(J2.pin5) != 0 :
+                    ser2.write(bytes(Track.PositionCup2 + "\r\n" , "utf-8"))
+                    time.sleep(0.1) 
+                    ser2.write(bytes(Track.Move + "\r\n" , "utf-8"))
+                    while True:
+                        ser2.flushInput() 
+                        ser2.write(bytes(Track.CheckSign + "\r\n" , "utf-8"))
+                        time.sleep(0.1)
+                        address=ser2.read(13).decode("utf-8")
+                        # print(address)
+                        na=address[11:13]
+                        # print(na)
+                        bc = " ".join(format(ord(c), "b") for c in na)
+                        # print(bc,type(bc))
+                        if len(bc) == 15:
+                            bin=bc[13]
+                            # print(bin,type(bin))
+                            if  bin == "1":
+                                break
+                    while pcaR.input(J2.pin8) != 0 :
+                        sys.exit(1) ### B道已經有杯子 ###
+                    while pcaR.input(J2.pin8) == 0 :
+                        if pcaR.input(J2.pin5) != 0 :   
+                            pca.output(J17.pin8,0)  ### 捲杯器動作 ###
+                            pca.output(J33.pin4,0)      ### 推桿到B ###
+                            while True:
                                 if pcaR.input(J2.pin8) != 0 :
                                     pca.output(J17.pin8,1)  ### 關閉落杯器 ###
-                                    time.sleep(1)
-                                    ser2.write(bytes(Track.PositionIce + "\r\n" , "utf-8"))
-                                    time.sleep(0.1) 
-                                    ser2.write(bytes(Track.Move + "\r\n" , "utf-8"))
-                                    time.sleep(5)   #1:5 2:10 3:25
-                                    ser2.flushInput() 
-                                    ser2.write(bytes(Track.CheckSign + "\r\n" , "utf-8"))
-                                    time.sleep(0.1)
-                                    address=ser2.read(13).decode("utf-8")
-                                    # print(address)
-                                    na=address[11:13]
-                                    # print(na)
-                                    bc = " ".join(format(ord(c), "b") for c in na)
-                                    # print(bc,type(bc))
+                                    break
+                            time.sleep(1)
+                            ser2.write(bytes(Track.PositionIce + "\r\n" , "utf-8"))
+                            time.sleep(0.1) 
+                            ser2.write(bytes(Track.Move + "\r\n" , "utf-8"))
+                            while True:
+                                ser2.flushInput() 
+                                ser2.write(bytes(Track.CheckSign + "\r\n" , "utf-8"))
+                                time.sleep(0.1)
+                                address=ser2.read(13).decode("utf-8")
+                                # print(address)
+                                na=address[11:13]
+                                # print(na)
+                                bc = " ".join(format(ord(c), "b") for c in na)
+                                # print(bc,type(bc))
+                                if len(bc) == 15:
                                     bin=bc[13]
                                     # print(bin,type(bin))
                                     if  bin == "1":
-                                        pca.output(J33.pin2,1)  ###電磁閥開啟###
-                                        time.sleep(1)
-                                        pca.output(J33.pin4,0)  ###開啟推桿使B道落冰###
-                                        time.sleep(opentime)   ###0,3,6,9###
-                                        pca.output(J33.pin2,0)  ###電磁閥關閉###
-                                        time.sleep(1)
-                                        pca.output(J33.pin4,1)  ###推桿關閉###
-                                        os.remove("./run/s0B.run")
+                                        break
+                            time.sleep(1)
+                            pca.output(J33.pin2,0)  ###電磁閥開啟###
+                            time.sleep(opentime)   ###0,3,6,9###
+                            pca.output(J33.pin2,1)  ###電磁閥關閉###
+            os.remove("./run/s0B.run")
     os.remove("./run/s0.run")
     open("./done/s0.done", 'w').close()
     
