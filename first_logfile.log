@@ -1,107 +1,21 @@
-2021-07-15 13:41:34,469 INFO A:processA [0, 0],order=0
-2021-07-15 13:41:34,471 INFO A:aprocessA-1 [1, 0],order=0
-2021-07-15 13:41:34,471 INFO A:do s0 A 9 sec
-2021-07-15 13:41:36,473 INFO B:processB show train AB is available [1, 0],order=1
-2021-07-15 13:41:36,474 INFO B:processB-1 set train B[1, 1],order=1
-2021-07-15 13:41:36,474 INFO B:s0 A is running , wait 1 sec for s0 A
-2021-07-15 13:41:37,474 INFO B:s0 A is running , wait 1 sec for s0 A
-2021-07-15 13:41:38,478 INFO B:s0 A is running , wait 1 sec for s0 A
-2021-07-15 13:41:39,481 INFO B:s0 A is running , wait 1 sec for s0 A
-2021-07-15 13:41:40,482 INFO B:s0 A is running , wait 1 sec for s0 A
-2021-07-15 13:41:41,486 INFO B:s0 A is running , wait 1 sec for s0 A
-2021-07-15 13:41:42,490 INFO B:s0 A is running , wait 1 sec for s0 A
-2021-07-15 13:41:43,494 INFO B:s0 A is running , wait 1 sec for s0 A
-2021-07-15 13:41:43,520 INFO A:do s1 A 8 sec
-2021-07-15 13:41:44,499 INFO B:s0 free do s0 on B 5 sec
-2021-07-15 13:41:49,553 INFO B:s1 A is running , wait 1 sec for s1 A
-2021-07-15 13:41:50,558 INFO B:s1 A is running , wait 1 sec for s1 A
-2021-07-15 13:41:51,561 INFO B:s1 A is running , wait 1 sec for s1 A
-2021-07-15 13:41:51,567 INFO A:do s2 A 6 sec
-2021-07-15 13:41:52,566 INFO B:s1 free do s1 on B 8 sec
-2021-07-15 13:41:57,613 INFO A:do s3 A 6 sec
-2021-07-15 13:42:00,614 INFO B:s2 free do s2 on B 8 sec
-2021-07-15 13:42:03,663 INFO A:do s4 A 6 sec
-2021-07-15 13:42:08,664 INFO B:s3 free do s3 on B 8 sec
-2021-07-15 13:42:09,714 INFO A:do s5 A 6 sec
-2021-07-15 13:42:15,761 INFO A:do s6 A 6 sec
-2021-07-15 13:42:16,711 INFO B:s4 free do s4 on B 7 sec
-2021-07-15 13:42:23,761 INFO B:s5 free do s5 on B 5 sec
-2021-07-15 13:42:23,811 INFO A:processA-E [0, 1],order=0
-2021-07-15 13:42:23,812 INFO A empty
-2021-07-15 13:42:24,817 INFO A empty
-2021-07-15 13:42:25,819 INFO A empty
-2021-07-15 13:42:26,822 INFO A empty
-2021-07-15 13:42:27,823 INFO A empty
-2021-07-15 13:42:28,813 INFO B:s6 free do s6 on B 9 sec
-2021-07-15 13:42:28,825 INFO A empty
-2021-07-15 13:42:29,830 INFO A empty
-2021-07-15 13:42:30,831 INFO A empty
-2021-07-15 13:42:31,832 INFO A empty
-2021-07-15 13:42:32,833 INFO A empty
-2021-07-15 13:42:33,839 INFO A empty
-2021-07-15 13:42:34,842 INFO A empty
-2021-07-15 13:42:35,845 INFO A empty
-2021-07-15 13:42:36,847 INFO A empty
-2021-07-15 13:42:37,852 INFO A empty
-2021-07-15 13:42:38,858 INFO A empty
-2021-07-15 13:42:39,861 INFO A empty
-2021-07-15 13:42:39,861 INFO B:processB-End done [0, 0],order=1
-2021-07-15 13:42:40,864 INFO A empty
-2021-07-15 13:42:41,866 INFO A empty
-2021-07-15 13:42:41,867 INFO B:B empty
-2021-07-15 13:42:42,872 INFO A empty
-2021-07-15 13:42:43,554 INFO json add order {"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupNum":"A0001","stationa":"02","stationb":"01010200030004000500","stationc":"01010200030004000500","stationd":"01000200030004000503","statione":"01010200030004000500","stationf":"01010200030004000500"}]} from rpc
-2021-07-15 13:42:43,877 INFO A:processA [0, 0],order={"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupNum":"A0001","stationa":"02","stationb":"01010200030004000500","stationc":"01010200030004000500","stationd":"01000200030004000503","statione":"01010200030004000500","stationf":"01010200030004000500"}]}
-2021-07-15 13:42:43,878 INFO A:aprocessA-1 [1, 0],order={"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupNum":"A0001","stationa":"02","stationb":"01010200030004000500","stationc":"01010200030004000500","stationd":"01000200030004000503","statione":"01010200030004000500","stationf":"01010200030004000500"}]}
-2021-07-15 13:42:43,878 INFO A:do s0 A 7 sec
-2021-07-15 13:42:44,872 INFO B:B empty
-2021-07-15 13:42:45,566 INFO json add order {"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupNum":"A0001","stationa":"02","stationb":"01010200030004000500","stationc":"01010200030004000500","stationd":"01000200030004000503","statione":"01010200030004000500","stationf":"01010200030004000500"}]} from rpc
-2021-07-15 13:42:47,572 INFO json add order {"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupNum":"A0001","stationa":"02","stationb":"01010200030004000500","stationc":"01010200030004000500","stationd":"01000200030004000503","statione":"01010200030004000500","stationf":"01010200030004000500"}]} from rpc
-2021-07-15 13:42:47,878 INFO B:processB show train AB is available [1, 0],order={"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupNum":"A0001","stationa":"02","stationb":"01010200030004000500","stationc":"01010200030004000500","stationd":"01000200030004000503","statione":"01010200030004000500","stationf":"01010200030004000500"}]}
-2021-07-15 13:42:47,879 INFO B:processB-1 set train B[1, 1],order={"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupNum":"A0001","stationa":"02","stationb":"01010200030004000500","stationc":"01010200030004000500","stationd":"01000200030004000503","statione":"01010200030004000500","stationf":"01010200030004000500"}]}
-2021-07-15 13:42:47,879 INFO B:s0 A is running , wait 1 sec for s0 A
-2021-07-15 13:42:48,881 INFO B:s0 A is running , wait 1 sec for s0 A
-2021-07-15 13:42:49,581 INFO json add order {"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupNum":"A0001","stationa":"02","stationb":"01010200030004000500","stationc":"01010200030004000500","stationd":"01000200030004000503","statione":"01010200030004000500","stationf":"01010200030004000500"}]} from rpc
-2021-07-15 13:42:49,886 INFO B:s0 A is running , wait 1 sec for s0 A
-2021-07-15 13:42:50,888 INFO B:s0 A is running , wait 1 sec for s0 A
-2021-07-15 13:42:50,912 INFO A:do s1 A 9 sec
-2021-07-15 13:42:51,586 INFO json add order {"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupNum":"A0001","stationa":"02","stationb":"01010200030004000500","stationc":"01010200030004000500","stationd":"01000200030004000503","statione":"01010200030004000500","stationf":"01010200030004000500"}]} from rpc
-2021-07-15 13:42:51,889 INFO B:s0 free do s0 on B 8 sec
-2021-07-15 13:42:53,591 INFO json add order {"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupNum":"A0001","stationa":"02","stationb":"01010200030004000500","stationc":"01010200030004000500","stationd":"01000200030004000503","statione":"01010200030004000500","stationf":"01010200030004000500"}]} from rpc
-2021-07-15 13:42:55,599 INFO json add order {"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupNum":"A0001","stationa":"02","stationb":"01010200030004000500","stationc":"01010200030004000500","stationd":"01000200030004000503","statione":"01010200030004000500","stationf":"01010200030004000500"}]} from rpc
-2021-07-15 13:42:57,605 INFO json add order {"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupNum":"A0001","stationa":"02","stationb":"01010200030004000500","stationc":"01010200030004000500","stationd":"01000200030004000503","statione":"01010200030004000500","stationf":"01010200030004000500"}]} from rpc
-2021-07-15 13:42:59,614 INFO json add order {"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupNum":"A0001","stationa":"02","stationb":"01010200030004000500","stationc":"01010200030004000500","stationd":"01000200030004000503","statione":"01010200030004000500","stationf":"01010200030004000500"}]} from rpc
-2021-07-15 13:42:59,926 INFO B:s1 A is running , wait 1 sec for s1 A
-2021-07-15 13:42:59,952 INFO A:do s2 A 9 sec
-2021-07-15 13:43:00,931 INFO B:s1 free do s1 on B 10 sec
-2021-07-15 13:43:01,619 INFO json add order {"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupNum":"A0001","stationa":"02","stationb":"01010200030004000500","stationc":"01010200030004000500","stationd":"01000200030004000503","statione":"01010200030004000500","stationf":"01010200030004000500"}]} from rpc
-2021-07-15 13:43:03,629 INFO json add order {"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupNum":"A0001","stationa":"02","stationb":"01010200030004000500","stationc":"01010200030004000500","stationd":"01000200030004000503","statione":"01010200030004000500","stationf":"01010200030004000500"}]} from rpc
-2021-07-15 13:43:05,637 INFO json add order {"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupNum":"A0001","stationa":"02","stationb":"01010200030004000500","stationc":"01010200030004000500","stationd":"01000200030004000503","statione":"01010200030004000500","stationf":"01010200030004000500"}]} from rpc
-2021-07-15 13:43:07,642 INFO json add order {"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupNum":"A0001","stationa":"02","stationb":"01010200030004000500","stationc":"01010200030004000500","stationd":"01000200030004000503","statione":"01010200030004000500","stationf":"01010200030004000500"}]} from rpc
-2021-07-15 13:43:08,994 INFO A:do s3 A 10 sec
-2021-07-15 13:43:09,652 INFO json add order {"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupNum":"A0001","stationa":"02","stationb":"01010200030004000500","stationc":"01010200030004000500","stationd":"01000200030004000503","statione":"01010200030004000500","stationf":"01010200030004000500"}]} from rpc
-2021-07-15 13:43:10,972 INFO B:s2 free do s2 on B 5 sec
-2021-07-15 13:43:11,657 INFO json add order {"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupNum":"A0001","stationa":"02","stationb":"01010200030004000500","stationc":"01010200030004000500","stationd":"01000200030004000503","statione":"01010200030004000500","stationf":"01010200030004000500"}]} from rpc
-2021-07-15 13:43:13,665 INFO json add order {"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupNum":"A0001","stationa":"02","stationb":"01010200030004000500","stationc":"01010200030004000500","stationd":"01000200030004000503","statione":"01010200030004000500","stationf":"01010200030004000500"}]} from rpc
-2021-07-15 13:43:15,671 INFO json add order {"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupNum":"A0001","stationa":"02","stationb":"01010200030004000500","stationc":"01010200030004000500","stationd":"01000200030004000503","statione":"01010200030004000500","stationf":"01010200030004000500"}]} from rpc
-2021-07-15 13:43:16,029 INFO B:s3 A is running , wait 1 sec for s3 A
-2021-07-15 13:43:17,034 INFO B:s3 A is running , wait 1 sec for s3 A
-2021-07-15 13:43:17,676 INFO json add order {"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupNum":"A0001","stationa":"02","stationb":"01010200030004000500","stationc":"01010200030004000500","stationd":"01000200030004000503","statione":"01010200030004000500","stationf":"01010200030004000500"}]} from rpc
-2021-07-15 13:43:18,040 INFO B:s3 A is running , wait 1 sec for s3 A
-2021-07-15 13:43:19,041 INFO B:s3 free do s3 on B 9 sec
-2021-07-15 13:43:19,042 INFO A:do s4 A 6 sec
-2021-07-15 13:43:19,685 INFO json add order {"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupNum":"A0001","stationa":"02","stationb":"01010200030004000500","stationc":"01010200030004000500","stationd":"01000200030004000503","statione":"01010200030004000500","stationf":"01010200030004000500"}]} from rpc
-2021-07-15 13:43:21,695 INFO json add order {"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupNum":"A0001","stationa":"02","stationb":"01010200030004000500","stationc":"01010200030004000500","stationd":"01000200030004000503","statione":"01010200030004000500","stationf":"01010200030004000500"}]} from rpc
-2021-07-15 13:43:23,700 INFO json add order {"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupNum":"A0001","stationa":"02","stationb":"01010200030004000500","stationc":"01010200030004000500","stationd":"01000200030004000503","statione":"01010200030004000500","stationf":"01010200030004000500"}]} from rpc
-2021-07-15 13:43:25,099 INFO A:do s5 A 7 sec
-2021-07-15 13:43:25,710 INFO json add order {"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupNum":"A0001","stationa":"02","stationb":"01010200030004000500","stationc":"01010200030004000500","stationd":"01000200030004000503","statione":"01010200030004000500","stationf":"01010200030004000500"}]} from rpc
-2021-07-15 13:43:27,719 INFO json add order {"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupNum":"A0001","stationa":"02","stationb":"01010200030004000500","stationc":"01010200030004000500","stationd":"01000200030004000503","statione":"01010200030004000500","stationf":"01010200030004000500"}]} from rpc
-2021-07-15 13:43:28,098 INFO B:s4 free do s4 on B 10 sec
-2021-07-15 13:43:29,728 INFO json add order {"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupNum":"A0001","stationa":"02","stationb":"01010200030004000500","stationc":"01010200030004000500","stationd":"01000200030004000503","statione":"01010200030004000500","stationf":"01010200030004000500"}]} from rpc
-2021-07-15 13:43:32,147 INFO A:do s6 A 10 sec
-2021-07-15 13:43:38,138 INFO B:s5 free do s5 on B 5 sec
-2021-07-15 13:43:43,193 INFO B:s6 free do s6 on B 7 sec
-2021-07-15 13:43:44,195 INFO A:processA-E [0, 1],order={"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupNum":"A0001","stationa":"02","stationb":"01010200030004000500","stationc":"01010200030004000500","stationd":"01000200030004000503","statione":"01010200030004000500","stationf":"01010200030004000500"}]}
-2021-07-15 13:43:44,196 INFO A:processA [0, 1],order={"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupNum":"A0001","stationa":"02","stationb":"01010200030004000500","stationc":"01010200030004000500","stationd":"01000200030004000503","statione":"01010200030004000500","stationf":"01010200030004000500"}]}
-2021-07-15 13:43:44,197 INFO A:aprocessA-1 [1, 1],order={"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupNum":"A0001","stationa":"02","stationb":"01010200030004000500","stationc":"01010200030004000500","stationd":"01000200030004000503","statione":"01010200030004000500","stationf":"01010200030004000500"}]}
-2021-07-15 13:43:44,197 INFO A:do s0 A 6 sec
+2021-07-18 16:19:47,360 INFO A empty
+2021-07-18 16:19:48,363 INFO A empty
+2021-07-18 16:19:49,043 INFO json add order {'ordernum': 'RSAP21071400002', 'cupcount': 1, 'content': [{'cupnum': 'A0001', 's0': '02', 's1': '01010200030004000500', 's2': '01010200030004000500', 's3': '01000200030004000503', 's4': '01010200030004000500', 's5': '01010200030004000500'}]} from rpc
+2021-07-18 16:19:49,365 INFO A:processA [0, 0],order=Content(cupnum='A0001', s0='02', s1='01010200030004000500', s2='01010200030004000500', s3='01000200030004000503', s4='01010200030004000500', s5='01010200030004000500')
+2021-07-18 16:19:49,366 INFO A:aprocessA-1 [1, 0],order=Content(cupnum='A0001', s0='02', s1='01010200030004000500', s2='01010200030004000500', s3='01000200030004000503', s4='01010200030004000500', s5='01010200030004000500')
+2021-07-18 16:19:49,366 INFO A:do s0 A 6 sec
+2021-07-18 16:19:51,053 INFO json add order {'ordernum': 'RSAP21071400002', 'cupcount': 1, 'content': [{'cupnum': 'A0001', 's0': '02', 's1': '01010200030004000500', 's2': '01010200030004000500', 's3': '01000200030004000503', 's4': '01010200030004000500', 's5': '01010200030004000500'}]} from rpc
+2021-07-18 16:19:51,054 INFO B:processB show train AB is available [1, 0],order=Content(cupnum='A0001', s0='02', s1='01010200030004000500', s2='01010200030004000500', s3='01000200030004000503', s4='01010200030004000500', s5='01010200030004000500')
+2021-07-18 16:19:51,054 INFO B:processB-1 set train B[1, 1],order=Content(cupnum='A0001', s0='02', s1='01010200030004000500', s2='01010200030004000500', s3='01000200030004000503', s4='01010200030004000500', s5='01010200030004000500')
+2021-07-18 16:19:51,055 INFO hello-s0-02
+2021-07-18 16:19:51,055 INFO B:s0 free do s0 on B 6 sec
+2021-07-18 16:19:51,103 INFO hello-s1-01010200030004000500
+2021-07-18 16:19:51,103 INFO B:s1 free do s1 on B 6 sec
+2021-07-18 16:19:53,065 INFO json add order {'ordernum': 'RSAP21071400002', 'cupcount': 1, 'content': [{'cupnum': 'A0001', 's0': '02', 's1': '01010200030004000500', 's2': '01010200030004000500', 's3': '01000200030004000503', 's4': '01010200030004000500', 's5': '01010200030004000500'}]} from rpc
+2021-07-18 16:19:55,073 INFO json add order {'ordernum': 'RSAP21071400002', 'cupcount': 1, 'content': [{'cupnum': 'A0001', 's0': '02', 's1': '01010200030004000500', 's2': '01010200030004000500', 's3': '01000200030004000503', 's4': '01010200030004000500', 's5': '01010200030004000500'}]} from rpc
+2021-07-18 16:19:55,414 INFO A:do s1 A 9 sec
+2021-07-18 16:19:55,461 INFO A:do s2 A 7 sec
+2021-07-18 16:19:55,503 INFO A:do s3 A 6 sec
+2021-07-18 16:19:57,085 INFO json add order {'ordernum': 'RSAP21071400002', 'cupcount': 1, 'content': [{'cupnum': 'A0001', 's0': '02', 's1': '01010200030004000500', 's2': '01010200030004000500', 's3': '01000200030004000503', 's4': '01010200030004000500', 's5': '01010200030004000500'}]} from rpc
+2021-07-18 16:19:57,152 INFO hello-s2-01010200030004000500
+2021-07-18 16:19:57,152 INFO B:s2 free do s2 on B 10 sec
