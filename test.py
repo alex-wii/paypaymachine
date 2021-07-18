@@ -46,10 +46,13 @@ def processA(bitArray,order):
                 time.sleep(1)
             
             print(f'hello-{sta}-{recp_dic[sta]}')
+            logger.info(f'hello-{sta}-{recp_dic[sta]}')   
             sec = random.randint(5,10) 
             logger.info(f'A:do {sta} A {sec} sec')
-            
-            p = subprocess.run(['python3',f'{sta}ta.py',f'A',f'{recp_dic[sta]}',f'{sec}'])
+            if os.name == 'posix' :
+                p = subprocess.run(['python3',f'{sta}ta.py',f'A',f'{recp_dic[sta]}',f'{sec}'])
+            else:
+                p = subprocess.run(['python3',f'{sta}.py',f'A',f'{recp_dic[sta]}'])
             # p = subprocess.run(['python3','s1.py',f'A',f'{sta}',f'{sec}'])
         time.sleep(2)
         bitArray[0]=0
@@ -77,13 +80,15 @@ def processB(bitArray,order):
                 time.sleep(1)
             logger.info(f'hello-{sta}-{recp_dic[sta]}')
             print(f'hello-{sta}-{recp_dic[sta]}')
+            logger.info(f'hello-{sta}-{recp_dic[sta]}')   
             sec = random.randint(5,10)
             
             logger.info(f'B:{sta} free do {sta} on B {sec} sec')
             
-            
-            p = subprocess.run(['python3',f'{sta}ta.py',f'A',f'{recp_dic[sta]}',f'{sec}'])
-            # p = subprocess.run(['python3','s1ta.py',f'B',f'{sta}',f'{sec}'])
+            if os.name == 'posix' :
+                p = subprocess.run(['python3',f'{sta}ta.py',f'B',f'{recp_dic[sta]}',f'{sec}'])
+            else:
+                p = subprocess.run(['python3',f'{sta}.py',f'B',f'{recp_dic[sta]}'])
             
         time.sleep(2)
         bitArray[1]=0
@@ -94,8 +99,11 @@ def processB(bitArray,order):
 def jsonrpcserver(q):
     @method
     def jsonrpc_addorder(order):
+        orderTest='{"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupnum":"A0001","s0":"02","s1":"01010200030004000500","s2":"01010200030004000500","s3":"01000200030004000503","s4":"01010200030004000500","s5":"01010200030004000500"}]}'
+        orderjson = json.loads(str(orderTest))
         logger.info(f'json add order {order} from rpc')
-        o_s=json.dumps(order)
+        # o_s=json.dumps(order) test
+        o_s=json.dumps(orderjson) 
         orderobj=PayPayOrder.from_json(o_s)
         print(orderobj.content)
         for cup in orderobj.content:
@@ -105,6 +113,7 @@ def jsonrpcserver(q):
             print('put')
             q.put(cup)
             print('put ok')
+            
     serve(port=9000)    
     
     
