@@ -118,7 +118,7 @@ def main():
             if len(bc0) == 15:
                 bin0=bc0[13]
                 if  bin0 == "1":         ### Z道下去抓杯位置(250)並收爪 ###
-                break
+                    break
         time.sleep(0.1)
         serZ.write(bytes(Track.ZTrackDown + "\r\n" , "utf-8"))
         time.sleep(0.1) 
@@ -133,7 +133,7 @@ def main():
             if len(bc1) == 15:
                 bin1=bc1[13]
                 if  bin1 == "1":    ### Z道回0位置 ###
-                break
+                    break
         time.sleep(0.1)
         pca.output(J34.pin9,0)
         time.sleep(1)
