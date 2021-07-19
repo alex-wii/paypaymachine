@@ -114,7 +114,7 @@ def main():
     print(orderjson)
     orderinfo=PayPayOrder.from_json(order)
     # orderinfo=pay_pay_order_from_dict(order)
-    print(f'{orderinfo.content=}')
-    print(f'{orderinfo.content[0].cupnum=}')
+    print(f'{orderinfo.content}')
+    print(f'{orderinfo.content[0].cupnum}')
 if __name__ == '__main__':
     main()

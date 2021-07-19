@@ -33,8 +33,7 @@ def processA(bitArray,order):
             time.sleep(1)
             continue
         o=order.get()
-        print(o)
-        print(f'{o=}')
+        print(f'{o}')
         logger.info(f'A:processA {list(bitArray)},order={o}')
         bitArray[0]=1
         logger.info(f'A:aprocessA-1 {list(bitArray)},order={o}')   
