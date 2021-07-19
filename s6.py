@@ -342,12 +342,12 @@ def main():
             # print(address)
             na=addressb[11:13]
             # print(na)
-            bc = " ".join(format(ord(c), "b") for c in na)
+            bcb = " ".join(format(ord(c), "b") for c in na)
             # print(bc,type(bc))
-            if len(bc) == 15:
-                bin=bc[13]
+            if len(bcb) == 15:
+                binb=bcb[13]
                 # print(bin,type(bin))
-                if  bin == "1":
+                if  binb == "1":
                     break
         time.sleep(0.1)
         serY.write(bytes(Track.YSpeed + "\r\n" , "utf-8"))      ### 20%speed    ###
