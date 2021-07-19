@@ -576,6 +576,6 @@ def main():
         os.remove("./run/s6B.run")
     os.remove("./run/s6.run")
     open("./done/s6.done", 'w').close()
-    
+    open(f"./done/{ordernumber}.done", 'w').close()
 if __name__ == "__main__":
     main()
