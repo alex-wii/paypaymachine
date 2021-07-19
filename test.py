@@ -38,7 +38,7 @@ def processA(bitArray,order):
         logger.info(f'A:processA {list(bitArray)},order={o}')
         bitArray[0]=1
         logger.info(f'A:aprocessA-1 {list(bitArray)},order={o}')   
-        recp_dic = {"s0":o.s0,"s1":o.s1,"s2":o.s2,"s3":o.s3,"s4":o.s4,"s5":o.s5,"s6":"endpoint"}
+        recp_dic = {"s0":o.s0,"s1":o.s1,"s2":o.s2,"s3":o.s3,"s4":o.s4,"s5":o.s5,"s6":o.cupnum}
         station = ["s0","s1","s2","s3","s4","s5","s6"]
         for sta in station:
             while checkSisruning(sta) is True:

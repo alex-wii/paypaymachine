@@ -10,6 +10,7 @@ train = sys.argv[1]
 sec = int(sys.argv[3])
 filename = f'./run/{name}.run'
 fileTrainName =  f'./run/{name}{train}.run'
+fileDoneName = f'./done/{name}.done'
 if os.path.exists(filename):
     station_logger.info(f"Error:1 , {filename} is run")
     sys.exit(1)
@@ -28,3 +29,4 @@ station_logger.info(f"{name}{train} end wait {sec} sec")
 station_logger.info(f"{sys.argv[1]}{name}done")
 os.remove(filename)
 os.remove(fileTrainName)
+open(fileDoneName, 'w').close()
