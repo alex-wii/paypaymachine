@@ -145,5 +145,15 @@ def read9675demo():
 
 # print('run write demo')
 # writedemo9675()
+def testIO():
+    pcaR=PCA9675I2C(address=0x11,busnum=1)
+    pcaR=PCA9675I2C(address=0x15,busnum=1)
+    pcaR=PCA9675I2C(address=0x28,busnum=1)
+    pcaR=PCA9675I2C(address=0x27,busnum=1)
+    pcaR=PCA9675I2C(address=0x2a,busnum=1)
+    pcaR=PCA9675I2C(address=0x2c,busnum=1)
+    pcaR=PCA9675I2C(address=0x1c,busnum=1)
+    pcaR=PCA9675I2C(address=0x18,busnum=1)
+    
 if __name__ == '__main__':
-    writedemo9675()
+    testIO()
