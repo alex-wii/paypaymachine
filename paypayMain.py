@@ -50,10 +50,14 @@ def processA(bitArray,order):
             logger.info(f'hello-{sta}-{recp_dic[sta]}')   
             sec = random.randint(5,10) 
             logger.info(f'A:do {sta} A {sec} sec')
-            if os.name == 'posix' :
-                p = subprocess.run(['python3',f'{sta}ta.py',f'A',f'{recp_dic[sta]}',f'{sec}'])
-            else:
+            if os.uname()[0] == 'Linux' :
+                print(f'send cmd python3 {sta}.py A {recp_dic[sta]}')
+                logger.info(f'send cmd python3 {sta}.py A {recp_dic[sta]}')
                 p = subprocess.run(['python3',f'{sta}.py',f'A',f'{recp_dic[sta]}'])
+            else:
+                print(f'send cmd python3 {sta}.py A {recp_dic[sta]}')
+                logger.info(f'send cmd python3 {sta}.py A {recp_dic[sta]}')
+                p = subprocess.run(['python3',f'{sta}ta.py',f'A',f'{recp_dic[sta]}',f'{sec}'])
             # p = subprocess.run(['python3','s1.py',f'A',f'{sta}',f'{sec}'])
         time.sleep(2)
         bitArray[0]=0
@@ -86,11 +90,17 @@ def processB(bitArray,order):
             
             logger.info(f'B:{sta} free do {sta} on B {sec} sec')
             
-            if os.name == 'posix' :
-                p = subprocess.run(['python3',f'{sta}ta.py',f'B',f'{recp_dic[sta]}',f'{sec}'])
-            else:
+            if os.uname()[0] == 'Linux' :
                 p = subprocess.run(['python3',f'{sta}.py',f'B',f'{recp_dic[sta]}'])
-            
+                print(f'send cmd python3 {sta}.py B {recp_dic[sta]}')
+                logger.info(f'send cmd python3 {sta}.py B {recp_dic[sta]}')   
+                
+            else:
+                p = subprocess.run(['python3',f'{sta}ta.py',f'B',f'{recp_dic[sta]}',f'{sec}'])
+                print(f'send cmd python3 {sta}.py B {recp_dic[sta]}')
+                logger.info(f'send cmd python3 {sta}.py B {recp_dic[sta]}')   
+                
+                
         time.sleep(2)
         bitArray[1]=0
         logger.info(f'B:processB-End done {list(bitArray)},order={o}')
