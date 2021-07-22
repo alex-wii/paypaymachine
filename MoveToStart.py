@@ -11,26 +11,20 @@ def Moving():
     AUsb=usbpath[Track.ATrainID]
     BUsb=usbpath[Track.BTrainID]
     YUsb=usbpath[Track.YTrackID]
-    with serial.Serial() as ser:
-        ser.baudrate = 57600
-        ser.port = AUsb
-        ser.open()
+    with serial.Serial(AUsb, 57600) as ser:
         ser.write(bytes(Track.PositionStart + "\r\n" , "utf-8"))
         time.sleep(0.1) 
         ser.write(bytes(Track.Move + "\r\n" , "utf-8"))
-    with serial.Serial() as ser2:
-        ser2.baudrate = 57600
-        ser2.port = BUsb
-        ser2.open()
+    with serial.Serial(BUsb, 57600) as ser2:
         ser2.write(bytes(Track.PositionStart + "\r\n" , "utf-8"))
         time.sleep(0.1) 
         ser2.write(bytes(Track.Move + "\r\n" , "utf-8"))
-    with serial.Serial() as ser3:
-        ser3.baudrate = 57600
-        ser3.port = YUsb
-        ser3.open()
+    with serial.Serial(YUsb, 57600) as ser3:
         ser3.write(bytes(Track.YSpeed + "\r\n" , "utf-8"))      ### 20%speed    ###
         time.sleep(0.1)
         ser3.write(bytes(Track.YTrackEnd + "\r\n" , "utf-8"))
         time.sleep(0.1) 
         ser3.write(bytes(Track.Move + "\r\n" , "utf-8"))
+
+
+Moving()
