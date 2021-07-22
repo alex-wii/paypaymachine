@@ -109,12 +109,21 @@ def pay_pay_order_to_dict(x: PayPayOrder) -> Any:
 
 
 def main():
-    order='{"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupnum":"A0001","stationa":"02","stationb":"01010200030004000500","stationc":"01010200030004000500","stationd":"01000200030004000503","statione":"01010200030004000500","stationf":"01010200030004000500"}]}'
-    orderjson = json.loads(order)
-    print(orderjson)
-    orderinfo=PayPayOrder.from_json(order)
-    # orderinfo=pay_pay_order_from_dict(order)
-    print(f'{orderinfo.content}')
-    print(f'{orderinfo.content[0].cupnum}')
+    # order='{"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupnum":"A0001","stationa":"02","stationb":"01010200030004000500","stationc":"01010200030004000500","stationd":"01000200030004000503","statione":"01010200030004000500","stationf":"01010200030004000500"}]}'
+    # orderjson = json.loads(order)
+    # print(orderjson)
+    # orderinfo=PayPayOrder.from_json(order)
+    # # orderinfo=pay_pay_order_from_dict(order)
+    # print(f'{orderinfo.content}')
+    # print(f'{orderinfo.content[0].cupnum}')
+    
+    recp_dic = {"stationa":1,"stationb":2,"stationc":3,"stationd":4,"statione":5,"stationf":6,"s6":"endpoint"}
+    station_dic = {"s0":"stationa","s1":"stationb","s2":"stationc","s3":"stationd","s4":"statione","s5":"stationf","s6":"endpoint"}
+    station = ["s0","s1","s2","s3","s4","s5","s6"]
+    print(station_dic['s0'])
+    print(recp_dic['stationa'])
+    print(recp_dic[station_dic['s0']])
+    # for sta in station:
+    #     print(recp_dic[station_dic[sta]])
 if __name__ == '__main__':
     main()

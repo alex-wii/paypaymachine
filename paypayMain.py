@@ -39,25 +39,26 @@ def processA(bitArray,order):
         logger.info(f'A:processA {list(bitArray)},order={o}')
         bitArray[0]=1
         logger.info(f'A:aprocessA-1 {list(bitArray)},order={o}')   
-        recp_dic = {"s0":o.s0,"s1":o.s1,"s2":o.s2,"s3":o.s3,"s4":o.s4,"s5":o.s5,"s6":o.cupnum}
+        recp_dic = {"stationa":o.stationa,"stationb":o.stationb,"stationc":o.stationc,"stationd":o.stationd,"statione":o.statione,"stationf":o.stationf,"s6":"endpoint"}
+        station_dic = {"s0":"stationa","s1":"stationb","s2":"stationc","s3":"stationd","s4":"statione","s5":"stationf","s6":"endpoint"}
         station = ["s0","s1","s2","s3","s4","s5","s6"]
         for sta in station:
             while checkSisruning(sta) is True:
                 logger.info(f'A:wait 1 sec for {sta}')
                 time.sleep(1)
             
-            print(f'hello-{sta}-{recp_dic[sta]}')
-            logger.info(f'hello-{sta}-{recp_dic[sta]}')   
+            print(f'hello-{sta}-{recp_dic[station_dic[sta]]}')
+            logger.info(f'hello-{sta}-{recp_dic[station_dic[sta]]}')   
             sec = random.randint(5,10) 
             logger.info(f'A:do {sta} A {sec} sec')
             if os.uname()[0] == 'Linux' :
-                print(f'send cmd python3 {sta}.py A {recp_dic[sta]}')
-                logger.info(f'send cmd python3 {sta}.py A {recp_dic[sta]}')
-                p = subprocess.run(['python3',f'{sta}.py',f'A',f'{recp_dic[sta]}'])
+                print(f'send cmd python3 {sta}.py A {recp_dic[station_dic[sta]]}')
+                logger.info(f'send cmd python3 {sta}.py A {recp_dic[station_dic[sta]]}')
+                p = subprocess.run(['python3',f'{sta}.py',f'A',f'{recp_dic[station_dic[sta]]}'])
             else:
-                print(f'send cmd python3 {sta}.py A {recp_dic[sta]}')
-                logger.info(f'send cmd python3 {sta}.py A {recp_dic[sta]}')
-                p = subprocess.run(['python3',f'{sta}ta.py',f'A',f'{recp_dic[sta]}',f'{sec}'])
+                print(f'send cmd python3 {sta}.py A {recp_dic[station_dic[sta]]}')
+                logger.info(f'send cmd python3 {sta}.py A {recp_dic[station_dic[sta]]}')
+                p = subprocess.run(['python3',f'{sta}ta.py',f'A',f'{recp_dic[station_dic[sta]]}',f'{sec}'])
             # p = subprocess.run(['python3','s1.py',f'A',f'{sta}',f'{sec}'])
         time.sleep(2)
         bitArray[0]=0
@@ -75,7 +76,8 @@ def processB(bitArray,order):
         logger.info(f'B:processB show train AB is available {list(bitArray)},order={o}')
         bitArray[1]=1
         logger.info(f'B:processB-1 set train B{list(bitArray)},order={o}')
-        recp_dic = {"s0":o.s0,"s1":o.s1,"s2":o.s2,"s3":o.s3,"s4":o.s4,"s5":o.s5,"s6":"endpoint"}
+        recp_dic = {"stationa":o.stationa,"stationb":o.stationb,"stationc":o.stationc,"stationd":o.stationd,"statione":o.statione,"stationf":o.stationf,"s6":"endpoint"}
+        station_dic = {"s0":"stationa","s1":"stationb","s2":"stationc","s3":"stationd","s4":"statione","s5":"stationf","s6":"endpoint"}
         station = ["s0","s1","s2","s3","s4","s5","s6"]
         
         for sta in station:
@@ -83,22 +85,22 @@ def processB(bitArray,order):
                 
                 logger.info(f'B:{sta} A is running , wait 1 sec for {sta} A')
                 time.sleep(1)
-            logger.info(f'hello-{sta}-{recp_dic[sta]}')
-            print(f'hello-{sta}-{recp_dic[sta]}')
-            logger.info(f'hello-{sta}-{recp_dic[sta]}')   
+            logger.info(f'hello-{sta}-{recp_dic[station_dic[sta]]}')
+            print(f'hello-{sta}-{recp_dic[station_dic[sta]]}')
+            logger.info(f'hello-{sta}-{recp_dic[station_dic[sta]]}')   
             sec = random.randint(5,10)
             
             logger.info(f'B:{sta} free do {sta} on B {sec} sec')
             
             if os.uname()[0] == 'Linux' :
-                p = subprocess.run(['python3',f'{sta}.py',f'B',f'{recp_dic[sta]}'])
-                print(f'send cmd python3 {sta}.py B {recp_dic[sta]}')
-                logger.info(f'send cmd python3 {sta}.py B {recp_dic[sta]}')   
+                p = subprocess.run(['python3',f'{sta}.py',f'B',f'{recp_dic[station_dic[sta]]}'])
+                print(f'send cmd python3 {sta}.py B {recp_dic[station_dic[sta]]}')
+                logger.info(f'send cmd python3 {sta}.py B {recp_dic[station_dic[sta]]}')   
                 
             else:
-                p = subprocess.run(['python3',f'{sta}ta.py',f'B',f'{recp_dic[sta]}',f'{sec}'])
-                print(f'send cmd python3 {sta}.py B {recp_dic[sta]}')
-                logger.info(f'send cmd python3 {sta}.py B {recp_dic[sta]}')   
+                p = subprocess.run(['python3',f'{sta}ta.py',f'B',f'{recp_dic[station_dic[sta]]}',f'{sec}'])
+                print(f'send cmd python3 {sta}.py B {recp_dic[station_dic[sta]]}')
+                logger.info(f'send cmd python3 {sta}.py B {recp_dic[station_dic[sta]]}')   
                 
                 
         time.sleep(2)
@@ -111,12 +113,11 @@ def jsonrpcserver(q):
     @method
     def jsonrpc_addorder(order):
         print(order)
-        orderTest='{"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupnum":"A0001","s0":"02","s1":"01010200030004000500","s2":"01010200030004000500","s3":"01000200030004000503","s4":"01010200030004000500","s5":"01010200030004000500"}]}'
-        orderjson = json.loads(str(orderTest))
-        logger.info(f'json add order {order} from rpc')
-        # o_s=json.dumps(order) test
-        o_s=json.dumps(orderjson) 
-        orderobj=PayPayOrder.from_json(o_s)
+        # order='{"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupnum":"A0001","stationa":"02","stationb":"01010200030004000500","stationc":"01010200030004000500","stationd":"01000200030004000503","statione":"01010200030004000500","stationf":"01010200030004000500"}]}'
+        # orderjson = json.loads(order)
+        # print(orderjson)
+        orderobj=PayPayOrder.from_json(order)
+        # orderinfo=pay_pay_order_from_dict(order)
         print(orderobj.content)
         for cup in orderobj.content:
             ss = cup.to_dict()
