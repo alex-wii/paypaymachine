@@ -12,33 +12,41 @@ from AllConfig import J17,J33,J34,Track
 
 ###     給料模組    ###
 pump=PCA9675I2C(address=0x15,busnum=1)      ###     幫浦      ###
+for i in range(16):
+    pump.setup(i,0)
+    time.sleep(0.1)
+    pump.output(i,1)
 doorA=PCA9675I2C(address=0x1c,busnum=1)      ###     A道電磁閥    ###
 doorB=PCA9675I2C(address=0x11,busnum=1)      ###     B道電磁閥    ###
 
 pump1=PCA9675I2C(address=0x28,busnum=1)      ###     幫浦1      ###
+for i in range(16):
+    pump1.setup(i,0)
+    time.sleep(0.1)
+    pump1.output(i,1)
 doorA1=PCA9675I2C(address=0x2c,busnum=1)      ###     A道電磁閥1    ###
 doorB1=PCA9675I2C(address=0x2a,busnum=1)      ###     B道電磁閥1    ###
 ###     沖茶模組    ###
-teapump=PCA9675I2C(address=0x2e,busnum=1)      ###     幫浦     ###
-teadoorA=PCA9675I2C(address=0x2e,busnum=1)      ###     A道電磁閥    ###
-teadoorB=PCA9675I2C(address=0x2e,busnum=1)      ###     B道電磁閥    ###
+# teapump=PCA9675I2C(address=0x2e,busnum=1)      ###     幫浦     ###
+# for i in range(16):
+#     teapump.setup(i,0)
+#     time.sleep(0.1)
+#     teapump.output(i,1)
+# teadoorA=PCA9675I2C(address=0x2e,busnum=1)      ###     A道電磁閥    ###
+# teadoorB=PCA9675I2C(address=0x2e,busnum=1)      ###     B道電磁閥    ###
 for i in range(16):
         # print(f'setup pin{i} is 0')    
-        pump.setup(i,0)
         doorA.setup(i,0)
         doorB.setup(i,0)
-        teapump.setup(i,0)
-        teadoorA.setup(i,0)
-        teadoorB.setup(i,0)
+        # teadoorA.setup(i,0)
+        # teadoorB.setup(i,0)
     
 for i in range(16):
         # print(f'setup pin{i} is 1')    
-    pump.output(i,1)
     doorA.output(i,1)
     doorB.output(i,1)
-    teapump.output(i,1)
-    teadoorA.output(i,1)
-    teadoorB.output(i,1)
+    # teadoorA.output(i,1)
+    # teadoorB.output(i,1)
 # pcaR=PCA9675I2C(address=0x26,busnum=1)
 
 
@@ -80,24 +88,24 @@ def Atrain():
             pump1.output(J17.pin2,1)
             time.sleep(0.1)
             doorA1.output(J17.pin2,1)
-        if time4 !=0 :
-            time.sleep(0.1)
-            teadoorA.output(J33.pin2,0) 
-            time.sleep(0.1)
-            teapump.output(J17.pin2,0)
-            time.sleep(time4)
-            teapump.output(J17.pin2,1)
-            time.sleep(0.1)
-            teadoorA.output(J33.pin2,1)
-        if time5 !=0 :
-            time.sleep(0.1)
-            teadoorA.output(J33.pin4,0)  
-            time.sleep(0.1)
-            teapump.output(J17.pin4,0)
-            time.sleep(time5)
-            teapump.output(J17.pin4,1)
-            time.sleep(0.1)
-            teadoorA.output(J33.pin4,1)
+        # if time4 !=0 :
+        #     time.sleep(0.1)
+        #     teadoorA.output(J33.pin2,0) 
+        #     time.sleep(0.1)
+        #     teapump.output(J17.pin2,0)
+        #     time.sleep(time4)
+        #     teapump.output(J17.pin2,1)
+        #     time.sleep(0.1)
+        #     teadoorA.output(J33.pin2,1)
+        # if time5 !=0 :
+        #     time.sleep(0.1)
+        #     teadoorA.output(J33.pin4,0)  
+        #     time.sleep(0.1)
+        #     teapump.output(J17.pin4,0)
+        #     time.sleep(time5)
+        #     teapump.output(J17.pin4,1)
+        #     time.sleep(0.1)
+        #     teadoorA.output(J33.pin4,1)
 
 def Btrain():
         if time1 !=0 :
@@ -127,24 +135,24 @@ def Btrain():
             pump.output(J17.pin2,1)
             time.sleep(0.1)
             doorB.output(J17.pin2,1)
-        if time4 !=0 :
-            time.sleep(0.1)
-            teadoorB.output(J34.pin2,0) 
-            time.sleep(0.1)
-            teapump.output(J17.pin2,0)
-            time.sleep(time4)
-            teapump.output(J17.pin2,1)
-            time.sleep(0.1)
-            teadoorB.output(J34.pin2,1)
-        if time5 !=0 :
-            time.sleep(0.1)
-            teadoorB.output(J34.pin4,0)  
-            time.sleep(0.1)
-            teapump.output(J17.pin4,0)
-            time.sleep(time5)
-            teapump.output(J17.pin4,1)
-            time.sleep(0.1)
-            teadoorB.output(J34.pin4,1)
+        # if time4 !=0 :
+        #     time.sleep(0.1)
+        #     teadoorB.output(J34.pin2,0) 
+        #     time.sleep(0.1)
+        #     teapump.output(J17.pin2,0)
+        #     time.sleep(time4)
+        #     teapump.output(J17.pin2,1)
+        #     time.sleep(0.1)
+        #     teadoorB.output(J34.pin2,1)
+        # if time5 !=0 :
+        #     time.sleep(0.1)
+        #     teadoorB.output(J34.pin4,0)  
+        #     time.sleep(0.1)
+        #     teapump.output(J17.pin4,0)
+        #     time.sleep(time5)
+        #     teapump.output(J17.pin4,1)
+        #     time.sleep(0.1)
+        #     teadoorB.output(J34.pin4,1)
             
 def main():
     
@@ -158,15 +166,13 @@ def main():
     if os.path.isfile("./run/s3.run"):
                 sys.exit(1)
     open("./run/s3.run", 'w').close()
-    with serial.Serial() as ser:
+    p1=usbpath[Track.ATrainID]
+    p2=usbpath[Track.BTrainID]
+    with serial.Serial(p1, 57600) as ser:
         if track == "A":
             if os.path.isfile("./run/s3B.run"):
                 sys.exit(1)
-            p1=usbpath[Track.ATrainID]
             open("./run/s3A.run", 'w').close()
-            ser.baudrate = 57600
-            ser.port =p1
-            ser.open()
             ser.write(bytes(Track.PositionS3 + "\r\n" , "utf-8"))
             time.sleep(0.1) 
             ser.write(bytes(Track.Move + "\r\n" , "utf-8"))
@@ -187,15 +193,11 @@ def main():
                         break
             Atrain()
             os.remove("./run/s3A.run")
-    with serial.Serial() as ser2:
+    with serial.Serial(p2, 57600) as ser2:
         if track == "B":
             if os.path.isfile("./run/s3A.run"):
                 sys.exit(1)
-            p2=usbpath[Track.BTrainID]
             open("./run/s3B.run", 'w').close()
-            ser2.baudrate = 57600
-            ser2.port =p2
-            ser2.open()
             ser2.write(bytes(Track.PositionS3 + "\r\n" , "utf-8"))
             time.sleep(0.1) 
             ser2.write(bytes(Track.Move + "\r\n" , "utf-8"))

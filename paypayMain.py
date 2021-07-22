@@ -110,6 +110,7 @@ def processB(bitArray,order):
 def jsonrpcserver(q):
     @method
     def jsonrpc_addorder(order):
+        print(order)
         orderTest='{"ordernum":"RSAP21071400002","cupcount":1,"content":[{"cupnum":"A0001","s0":"02","s1":"01010200030004000500","s2":"01010200030004000500","s3":"01000200030004000503","s4":"01010200030004000500","s5":"01010200030004000500"}]}'
         orderjson = json.loads(str(orderTest))
         logger.info(f'json add order {order} from rpc')
