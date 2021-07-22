@@ -13,6 +13,7 @@ from paypayorder import PayPayOrder
 from PayPayCupOrder import PayPayCupOrder,pay_pay_cup_order_from_dict
 import json
 
+
 def checkSisruning(sta):
     filename = f'./run/{sta}.run'
     if os.path.isfile(filename):
@@ -33,6 +34,7 @@ def processA(bitArray,order):
             time.sleep(1)
             continue
         o=order.get()
+        print(o)
         print(f'{o}')
         logger.info(f'A:processA {list(bitArray)},order={o}')
         bitArray[0]=1
@@ -124,7 +126,8 @@ if __name__ == '__main__':
     logger.info(order_queue)
     
     train_bit=mp.Array('i', 2)
-    shutil.rmtree('./run')
+    if os.path.isdir(f"./run") == True:
+        shutil.rmtree('./run')
     os.mkdir('./run')
     
     rpcservprocess = mp.Process(target=jsonrpcserver,args=(order_queue,))
