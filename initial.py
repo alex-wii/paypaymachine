@@ -126,12 +126,9 @@ print(f'x={x}')
 ppath=findPrintby6790(x)
 print(f'ppath={ppath}')
 
-# with serial.Serial() as ser2:
-#     ser2.baudrate = 57600
-#     ser2.port = ppath
-#     ser2.open()
-#     data = b'\x02\x00\x0A\x00\x35\xE0\x07\x03\x01\x08\x19\x2D\x01\x79\x03' #2016/03/01/08
-#     ser2.write(data)
+with serial.Serial(ppath, 57600) as ser2:
+    data = b'\x02\x00\x0A\x00\x35\xE0\x07\x03\x01\x08\x19\x2D\x01\x79\x03' #2016/03/01/08
+    ser2.write(data)
 
 for e in x:
     if "AMA0" in e.device :
@@ -173,14 +170,14 @@ for usbpath in pathlist :
 # I2CReadBoardID()
 
 
-if os.path.isdir("./run"):
-    pass
-else:
-    os.mkdir("run")
-if os.path.isdir("./done"):
-    pass
-else:
-    os.mkdir("done")
+# if os.path.isdir("./run"):
+#     pass
+# else:
+#     os.mkdir("run")
+# if os.path.isdir("./done"):
+#     pass
+# else:
+#     os.mkdir("done")
     
     
 try:

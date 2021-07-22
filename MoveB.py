@@ -10,11 +10,8 @@ def main():
     with open("./TrackUsb.json", 'r') as obj1:
         usbpath = json.load(obj1)
     CMD=input('input the CMD : ')
-    with serial.Serial() as ser:
-        p1=usbpath[Track.BTrainID] ###  W2  ###
-        ser.baudrate = 57600
-        ser.port =p1
-        ser.open()
+    p1=usbpath[Track.BTrainID] ###  W2  ###
+    with serial.Serial(p1, 57600) as ser:
         if CMD == "c1" :
             ser.write(bytes(Track.PositionStart + "\r\n" , "utf-8"))
             time.sleep(0.1) 

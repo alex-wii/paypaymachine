@@ -38,12 +38,10 @@ def main():
     usbpath =''
     with open("./TrackUsb.json", 'r') as obj1:
         usbpath = json.load(obj1)
-    with serial.Serial() as ser:
+    p1=usbpath[Track.ATrainID] ###  W2  ###
+    p2=usbpath[Track.BTrainID]     ###  W4  ###
+    with serial.Serial(p1, 57600) as ser:
         if track == "A":
-            p1=usbpath[Track.ATrainID] ###  W2  ###
-            ser.baudrate = 57600
-            ser.port =p1
-            ser.open()
             if pcaR.input(J3.pin2) != 0 :       ### A道第一管有杯子先用第一管 ###
                 ser.write(bytes(Track.PositionStart + "\r\n" , "utf-8"))
                 time.sleep(0.1) 
@@ -157,12 +155,8 @@ def main():
                     # pca.output(J33.pin2,1)  ###電磁閥開啟###
                     # time.sleep(6)   ###0,3,6,9###
                     # pca.output(J33.pin2,0)  ###電磁閥關閉###
-    with serial.Serial() as ser2:
+    with serial.Serial(p2, 57600) as ser2:
         if track == "B":
-            p2=usbpath[Track.BTrainID]     ###  W4  ###
-            ser2.baudrate = 57600
-            ser2.port =p2
-            ser2.open()
             if pcaR.input(J2.pin2) != 0 :   ### B道第一管有杯子先用第一管 ###
                 ser2.write(bytes(Track.PositionStart + "\r\n" , "utf-8"))
                 time.sleep(0.1) 

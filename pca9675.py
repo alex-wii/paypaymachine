@@ -145,14 +145,70 @@ def read9675demo():
 
 # print('run write demo')
 # writedemo9675()
+def I2CWriteBoardID():
+    pcaW11=PCA9675I2C(address=0x11,busnum=1)
+    pcaW15=PCA9675I2C(address=0x15,busnum=1)
+    pcaW18=PCA9675I2C(address=0x18,busnum=1)
+    pcaW1c=PCA9675I2C(address=0x1c,busnum=1)
+    pcaW28=PCA9675I2C(address=0x28,busnum=1)
+    pcaW2a=PCA9675I2C(address=0x2a,busnum=1)
+    pcaW2c=PCA9675I2C(address=0x2c,busnum=1)
+    # pcaW27=PCA9675I2C(address=0x27,busnum=1)
+    for i in range(16):   
+            pcaW11.setup(i,0)
+            pcaW15.setup(i,0)
+            # pcaW18.setup(i,0)
+            pcaW1c.setup(i,0)
+            pcaW28.setup(i,0)
+            pcaW2a.setup(i,0)
+            pcaW2c.setup(i,0)
+            # pcaW27.setup(i,0)
+    for i in range(16): 
+            pcaW11.output(i,1)
+            pcaW15.output(i,1)
+            pcaW18.output(i,1)
+            pcaW1c.output(i,1)
+            pcaW28.output(i,1)
+            pcaW2a.output(i,1)
+            pcaW2c.output(i,1)
+            # pcaW27.output(i,1)
+    pcaW18.output(J34.pin2,0)
+    pcaW18.output(J34.pin4,0)
+
+def testiopca(pca):
+    for i in range(16):
+        print(f'setup pin{i} is 0')    
+        pca.setup(i,0)
+    for i in range(16):
+        pca.output(i,1)
+    
+    # for i in range(16):
+    #     print(f'setup pin{i} is 1')    
+    #     input('press on done')
+    #     pca.output(i,1)
+    #     input('press off')
+    #     pca.output(i,0)
+    #     input('press off done')
+
 def testIO():
     pcaR=PCA9675I2C(address=0x11,busnum=1)
     pcaR=PCA9675I2C(address=0x15,busnum=1)
+    testiopca(pcaR)
+
+ 
     pcaR=PCA9675I2C(address=0x28,busnum=1)
-    pcaR=PCA9675I2C(address=0x27,busnum=1)
-    pcaR=PCA9675I2C(address=0x2a,busnum=1)
-    pcaR=PCA9675I2C(address=0x2c,busnum=1)
-    pcaR=PCA9675I2C(address=0x1c,busnum=1)
+    testiopca(pcaR)
+    
+
+
+    # pcaR=PCA9675I2C(address=0x27,busnum=1)
+    # testiopca(pcaR)
+    # pcaR=PCA9675I2C(address=0x2a,busnum=1)
+    # testiopca(pcaR)
+    # pcaR=PCA9675I2C(address=0x2c,busnum=1)
+    # testiopca(pcaR)
+    # pcaR=PCA9675I2C(address=0x1c,busnum=1)
+    # testiopca(pcaR)
     pcaR=PCA9675I2C(address=0x18,busnum=1)
     
 if __name__ == '__main__':

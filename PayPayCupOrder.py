@@ -27,34 +27,34 @@ def to_class(c: Type[T], x: Any) -> dict:
 @dataclass
 class PayPayCupOrder:
     cupnum: str
-    s0: str
-    s1: str
-    s2: str
-    s3: str
-    s4: str
-    s5: str
+    stationa: str
+    stationb: str
+    stationc: str
+    stationd: str
+    statione: str
+    stationf: str
 
     @staticmethod
     def from_dict(obj: Any) -> 'PayPayCupOrder':
         assert isinstance(obj, dict)
         cupnum = from_str(obj.get("cupnum"))
-        s0 = from_str(obj.get("s0"))
-        s1 = from_str(obj.get("s1"))
-        s2 = from_str(obj.get("s2"))
-        s3 = from_str(obj.get("s3"))
-        s4 = from_str(obj.get("s4"))
-        s5 = from_str(obj.get("s5"))
-        return PayPayCupOrder(cupnum, s0, s1, s2, s3, s4, s5)
+        stationa = from_str(obj.get("stationa"))
+        stationb = from_str(obj.get("stationb"))
+        stationc = from_str(obj.get("stationc"))
+        stationd = from_str(obj.get("stationd"))
+        statione = from_str(obj.get("statione"))
+        stationf = from_str(obj.get("stationf"))
+        return PayPayCupOrder(cupnum, stationa, stationb, stationc, stationd, statione, stationf)
 
     def to_dict(self) -> dict:
         result: dict = {}
         result["cupnum"] = from_str(self.cupnum)
-        result["s0"] = from_str(self.s0)
-        result["s1"] = from_str(self.s1)
-        result["s2"] = from_str(self.s2)
-        result["s3"] = from_str(self.s3)
-        result["s4"] = from_str(self.s4)
-        result["s5"] = from_str(self.s5)
+        result["stationa"] = from_str(self.stationa)
+        result["stationb"] = from_str(self.stationb)
+        result["stationc"] = from_str(self.stationc)
+        result["stationd"] = from_str(self.stationd)
+        result["statione"] = from_str(self.statione)
+        result["stationf"] = from_str(self.stationf)
         return result
 
 
