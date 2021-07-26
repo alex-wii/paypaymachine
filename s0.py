@@ -23,16 +23,9 @@ pca.output(J34.pin9,1)  ### 爪夾   ###
 pca.output(J33.pin4,1)  ### 落冰推桿    ###
 
 track=sys.argv[1]
-# ice=sys.argv[2]
-# intice=int(ice)
-# if intice == 0: ### 去冰 ###
-#     opentime = Icedata.ice0
-# if intice == 3: ### 微冰 ###
-#     opentime = Icedata.ice3
-# if intice == 6: ### 少冰 ###
-#     opentime = Icedata.ice6
-# if intice == 9: ### 正常冰 ###
-#     opentime = Icedata.ice9
+ice=sys.argv[2]
+opentime=int(ice)
+
 
 def main():
     usbpath =''
@@ -96,10 +89,10 @@ def main():
                                 # print(bin,type(bin))
                                 if  bin == "1":
                                     break
-                        # time.sleep(1)
-                        # pca.output(J33.pin2,0)  ###電磁閥開啟###
-                        # time.sleep(opentime)   ###0,3,6,9###
-                        # pca.output(J33.pin2,1)  ###電磁閥關閉###
+                        time.sleep(1)
+                        pca.output(J33.pin2,0)  ###電磁閥開啟###
+                        time.sleep(opentime)   ###0,3,6,9###
+                        pca.output(J33.pin2,1)  ###電磁閥關閉###
                         os.remove("./run/s0A.run")
             if pcaR.input(J3.pin2) == 0 :
                 ser.write(bytes(Track.PositionCup2 + "\r\n" , "utf-8"))
@@ -146,10 +139,10 @@ def main():
                             # print(bin,type(bin))
                             if  bin == "1":
                                 break
-                    # time.sleep(1)
-                    # pca.output(J33.pin2,0)  ###電磁閥開啟###
-                    # time.sleep(opentime)   ###0,3,6,9###
-                    # pca.output(J33.pin2,1)  ###電磁閥關閉###
+                    time.sleep(1)
+                    pca.output(J33.pin2,0)  ###電磁閥開啟###
+                    time.sleep(opentime)   ###0,3,6,9###
+                    pca.output(J33.pin2,1)  ###電磁閥關閉###
             os.remove("./run/s0A.run")
     with serial.Serial(p2, 57600) as ser2:
         if track == "B":
@@ -204,10 +197,10 @@ def main():
                                 # print(bin,type(bin))
                                 if  bin == "1":
                                     break
-                        # time.sleep(1)
-                        # pca.output(J33.pin2,0)  ###電磁閥開啟###
-                        # time.sleep(opentime)   ###0,3,6,9###
-                        # pca.output(J33.pin2,1)  ###電磁閥關閉###
+                        time.sleep(1)
+                        pca.output(J33.pin2,0)  ###電磁閥開啟###
+                        time.sleep(opentime)   ###0,3,6,9###
+                        pca.output(J33.pin2,1)  ###電磁閥關閉###
                         os.remove("./run/s0B.run")
             if pcaR.input(J2.pin2) == 0 :
                 ser2.write(bytes(Track.PositionCup2 + "\r\n" , "utf-8"))
@@ -254,10 +247,10 @@ def main():
                             # print(bin,type(bin))
                             if  bin == "1":
                                 break
-                    # time.sleep(1)
-                    # pca.output(J33.pin2,0)  ###電磁閥開啟###
-                    # time.sleep(opentime)   ###0,3,6,9###
-                    # pca.output(J33.pin2,1)  ###電磁閥關閉###
+                    time.sleep(1)
+                    pca.output(J33.pin2,0)  ###電磁閥開啟###
+                    time.sleep(opentime)   ###0,3,6,9###
+                    pca.output(J33.pin2,1)  ###電磁閥關閉###
             os.remove("./run/s0B.run")
     os.remove("./run/s0.run")
     open("./done/s0.done", 'w').close()

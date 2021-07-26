@@ -35,12 +35,6 @@ class J2:
     pin8 = 2
     pin10 = 3  
     
-class Icedata:
-    ice0 = 0
-    ice3 = 1
-    ice6 = 2
-    ice9 = 3
-    
 class Track:
     YTrackID = ":0103020005F5"
     ZTrackID = ":0103020003F7"
