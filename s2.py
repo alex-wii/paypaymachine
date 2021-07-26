@@ -10,11 +10,6 @@ import sys
 from pca9675 import PCA9675I2C
 from AllConfig import J33,J34,Track
 
-pump=PCA9675I2C(address=0x15,busnum=1)      ###     幫浦      ###
-for i in range(16):
-    pump.setup(i,0)
-    time.sleep(0.1)
-    pump.output(i,1)
 doorA=PCA9675I2C(address=0x1c,busnum=1)      ###     A道電磁閥    ###
 doorB=PCA9675I2C(address=0x11,busnum=1)      ###     B道電磁閥    ###
 for i in range(16):
@@ -22,13 +17,13 @@ for i in range(16):
         # pump.setup(i,0)
     doorA.setup(i,0)
     doorB.setup(i,0)
-    
+pump=PCA9675I2C(address=0x15,busnum=1)      ###     幫浦      ###
 for i in range(16):
-        # print(f'setup pin{i} is 1')    
-    # pump.output(i,1)
+    pump.setup(i,0)
+    time.sleep(0.1)
     doorA.output(i,1)
     doorB.output(i,1)
-# pcaR=PCA9675I2C(address=0x26,busnum=1)
+    pump.output(i,1)
 
 track=sys.argv[1]
 timedata=sys.argv[2]
@@ -47,45 +42,45 @@ def Atrain():
             time.sleep(0.1)
             pump.output(J33.pin4,0) 
             time.sleep(time1)
-            pump.output(J33.pin4,1)
-            time.sleep(0.1)
             doorA.output(J33.pin4,1)
+            time.sleep(0.1)
+            pump.output(J33.pin4,1)
         if time2 !=0 :
             time.sleep(0.1)
             doorA.output(J33.pin6,0) 
             time.sleep(0.1)
             pump.output(J33.pin6,0)
             time.sleep(time2)
-            pump.output(J33.pin6,1)
-            time.sleep(0.1)
             doorA.output(J33.pin6,1)
+            time.sleep(0.1)
+            pump.output(J33.pin6,1)
         if time3 !=0 :
             time.sleep(0.1)
             doorA.output(J33.pin8,0)  
             time.sleep(0.1)
             pump.output(J33.pin8,0)
             time.sleep(time3)
-            pump.output(J33.pin8,1)
-            time.sleep(0.1)
             doorA.output(J33.pin8,1)
+            time.sleep(0.1)
+            pump.output(J33.pin8,1)
         if time4 !=0 :
             time.sleep(0.1)
             doorA.output(J34.pin2,0) 
             time.sleep(0.1)
             pump.output(J34.pin2,0)
             time.sleep(time4)
-            pump.output(J34.pin2,1)
-            time.sleep(0.1)
             doorA.output(J34.pin2,1)
+            time.sleep(0.1)
+            pump.output(J34.pin2,1)
         if time5 !=0 :
             time.sleep(0.1)
             doorA.output(J34.pin4,0)  
             time.sleep(0.1)
             pump.output(J34.pin4,0)
             time.sleep(time5)
-            pump.output(J34.pin4,1)
-            time.sleep(0.1)
             doorA.output(J34.pin4,1)
+            time.sleep(0.1)
+            pump.output(J34.pin4,1)
 
 def Btrain():
         if time1 !=0 :
@@ -94,45 +89,45 @@ def Btrain():
             time.sleep(0.1)
             pump.output(J33.pin4,0) 
             time.sleep(time1)
-            pump.output(J33.pin4,1)
-            time.sleep(0.1)
             doorB.output(J33.pin4,1)
+            time.sleep(0.1)
+            pump.output(J33.pin4,1)
         if time2 !=0 :
             time.sleep(0.1)
             doorB.output(J33.pin6,0) 
             time.sleep(0.1)
             pump.output(J33.pin6,0)
             time.sleep(time2)
-            pump.output(J33.pin6,1)
-            time.sleep(0.1)
             doorB.output(J33.pin6,1)
+            time.sleep(0.1)
+            pump.output(J33.pin6,1)
         if time3 !=0 :
             time.sleep(0.1)
             doorB.output(J33.pin8,0)  
             time.sleep(0.1)
             pump.output(J33.pin8,0)
             time.sleep(time3)
-            pump.output(J33.pin8,1)
-            time.sleep(0.1)
             doorB.output(J33.pin8,1)
+            time.sleep(0.1)
+            pump.output(J33.pin8,1)
         if time4 !=0 :
             time.sleep(0.1)
             doorB.output(J34.pin2,0) 
             time.sleep(0.1)
             pump.output(J34.pin2,0)
             time.sleep(time4)
-            pump.output(J34.pin2,1)
-            time.sleep(0.1)
             doorB.output(J34.pin2,1)
+            time.sleep(0.1)
+            pump.output(J34.pin2,1)
         if time5 !=0 :
             time.sleep(0.1)
             doorB.output(J34.pin4,0)  
             time.sleep(0.1)
             pump.output(J34.pin4,0)
             time.sleep(time5)
-            pump.output(J34.pin4,1)
-            time.sleep(0.1)
             doorB.output(J34.pin4,1)
+            time.sleep(0.1)
+            pump.output(J34.pin4,1)
         
         
 def main():
