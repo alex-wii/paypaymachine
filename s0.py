@@ -31,18 +31,18 @@ opentime=int(ice)
 
 def main():
     usbpath =''
-    with open("./TrackUsb.json", 'r') as obj1:
+    with open("/home/pi/paypaymachine/TrackUsb.json", 'r') as obj1:
         usbpath = json.load(obj1)
-    if os.path.isfile("./run/s0.run"):
+    if os.path.isfile("/home/pi/paypaymachine/run/s0.run"):
             sys.exit(1)
-    open("./run/s0.run", 'w').close()
+    open("/home/pi/paypaymachine/run/s0.run", 'w').close()
     p1=usbpath[Track.ATrainID] ###  W2  ###
     p2=usbpath[Track.BTrainID]     ###  W4  ###
     with serial.Serial(p1, 57600) as ser:
         if track == "A":
-            if os.path.isfile("./run/s0B.run"):
+            if os.path.isfile("/home/pi/paypaymachine/run/s0B.run"):
                 sys.exit(1)
-            open("./run/s0A.run", 'w').close()
+            open("/home/pi/paypaymachine/run/s0A.run", 'w').close()
             if pcaR.input(J3.pin2) != 0 :       ### A道第一管有杯子先用第一管 ###
                 ser.write(bytes(Track.PositionStart + "\r\n" , "utf-8"))
                 time.sleep(0.1) 
@@ -98,7 +98,7 @@ def main():
                         pca.output(J33.pin4,1)  ###電磁閥關閉###
                         time.sleep(5)
                         print("A1做完囉")
-                        os.remove("./run/s0A.run")
+                        os.remove("/home/pi/paypaymachine/run/s0A.run")
             if pcaR.input(J3.pin2) == 0 :
                 ser.write(bytes(Track.PositionCup2 + "\r\n" , "utf-8"))
                 time.sleep(0.1) 
@@ -151,12 +151,12 @@ def main():
                     pca.output(J33.pin4,1)  ###電磁閥關閉###
                     time.sleep(5)
                     print("A2做完囉")
-                    os.remove("./run/s0A.run")
+                    os.remove("/home/pi/paypaymachine/run/s0A.run")
     with serial.Serial(p2, 57600) as ser2:
         if track == "B":
-            if os.path.isfile("./run/s0A.run"):
+            if os.path.isfile("/home/pi/paypaymachine/run/s0A.run"):
                 sys.exit(1)
-            open("./run/s0B.run", 'w').close()
+            open("/home/pi/paypaymachine/run/s0B.run", 'w').close()
             if pcaR.input(J2.pin2) != 0 :   ### B道第一管有杯子先用第一管 ###
                 ser2.write(bytes(Track.PositionStart + "\r\n" , "utf-8"))
                 time.sleep(0.1) 
@@ -212,7 +212,7 @@ def main():
                         pca.output(J33.pin4,1)  ###電磁閥關閉###
                         time.sleep(5)
                         print("B1做完囉")
-                        os.remove("./run/s0B.run")
+                        os.remove("/home/pi/paypaymachine/run/s0B.run")
             if pcaR.input(J2.pin2) == 0 :
                 ser2.write(bytes(Track.PositionCup2 + "\r\n" , "utf-8"))
                 time.sleep(0.1) 
@@ -265,10 +265,10 @@ def main():
                     pca.output(J33.pin4,1)  ###電磁閥關閉###
                     time.sleep(5)
                     print("B2做完囉")
-                    os.remove("./run/s0B.run")
+                    os.remove("/home/pi/paypaymachine/run/s0B.run")
     time.sleep(1)
-    os.remove("./run/s0.run")
-    open("./done/s0.done", 'w').close()
+    os.remove("/home/pi/paypaymachine/run/s0.run")
+    open("/home/pi/paypaymachine/done/s0.done", 'w').close()
     
 if __name__ == "__main__":
     main()

@@ -62,13 +62,13 @@ else:
 def main():
 
     usbpath =""
-    with open("./TrackUsb.json", "r") as obj1:
+    with open("/home/pi/paypaymachine/TrackUsb.json", "r") as obj1:
         usbpath = json.load(obj1)
-    with open("./PrinterUsb.json", "r") as obj1:
+    with open("/home/pi/paypaymachine/PrinterUsb.json", "r") as obj1:
         printerusb = json.load(obj1)
-    if os.path.isfile("./run/s6.run"):
+    if os.path.isfile("/home/pi/paypaymachine/run/s6.run"):
                 sys.exit(1)
-    open("./run/s6.run", 'w').close()
+    open("/home/pi/paypaymachine/run/s6.run", 'w').close()
     TrainA = usbpath[Track.ATrainID]
     serA=serial.Serial(TrainA,57600)
     TrainB = usbpath[Track.BTrainID]
@@ -81,9 +81,9 @@ def main():
     serP=serial.Serial(Printer,57600)
     serP.bytesize=serial.EIGHTBITS
     if track == "A":
-        if os.path.isfile("./run/s6B.run"):
+        if os.path.isfile("/home/pi/paypaymachine/run/s6B.run"):
             sys.exit(1)
-        open("./run/s6A.run", 'w').close()
+        open("/home/pi/paypaymachine/run/s6A.run", 'w').close()
         serA.write(bytes(Track.PositionEnd + "\r\n" , "utf-8"))
         time.sleep(0.1) 
         serA.write(bytes(Track.Move + "\r\n" , "utf-8"))
@@ -326,11 +326,11 @@ def main():
             serY.close()
             serZ.close()
             serP.close()
-        os.remove("./run/s6A.run")
+        os.remove("/home/pi/paypaymachine/run/s6A.run")
     if track == "B":
-        if os.path.isfile("./run/s6A.run"):
+        if os.path.isfile("/home/pi/paypaymachine/run/s6A.run"):
             sys.exit(1)
-        open("./run/s6B.run", 'w').close()
+        open("/home/pi/paypaymachine/run/s6B.run", 'w').close()
         serB.write(bytes(Track.PositionEnd + "\r\n" , "utf-8"))
         time.sleep(0.1) 
         serB.write(bytes(Track.Move + "\r\n" , "utf-8"))
@@ -573,10 +573,10 @@ def main():
             serY.close()
             serZ.close()
             serP.close()
-        os.remove("./run/s6B.run")
+        os.remove("/home/pi/paypaymachine/run/s6B.run")
     time.sleep(1)
-    os.remove("./run/s6.run")
-    open("./done/s6.done", 'w').close()
-    open(f"./done/{ordernumber}.done", 'w').close()
+    os.remove("/home/pi/paypaymachine/run/s6.run")
+    open("/home/pi/paypaymachine/done/s6.done", 'w').close()
+    open(f"/home/pi/paypaymachine/done/{ordernumber}.done", 'w').close()
 if __name__ == "__main__":
     main()

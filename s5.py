@@ -149,21 +149,21 @@ def main():
     
     if time1 == 0 and time2 == 0 and time3 == 0 and time4 == 0 and time5 == 0:
         sys.exit(1)
-        open("./done/s5.done", 'w').close()
+        open("/home/pi/paypaymachine/done/s5.done", 'w').close()
     
     usbpath =""
-    with open("./TrackUsb.json", "r") as obj1:
+    with open("/home/pi/paypaymachine/TrackUsb.json", "r") as obj1:
         usbpath = json.load(obj1)
-    if os.path.isfile("./run/s5.run"):
+    if os.path.isfile("/home/pi/paypaymachine/run/s5.run"):
                 sys.exit(1)
-    open("./run/s5.run", 'w').close()
+    open("/home/pi/paypaymachine/run/s5.run", 'w').close()
     p1=usbpath[Track.ATrainID]
     p2=usbpath[Track.BTrainID]
     with serial.Serial(p1, 57600) as ser:
         if track == "A":
-            if os.path.isfile("./run/s5B.run"):
+            if os.path.isfile("/home/pi/paypaymachine/run/s5B.run"):
                 sys.exit(1)
-            open("./run/s5A.run", 'w').close()
+            open("/home/pi/paypaymachine/run/s5A.run", 'w').close()
             ser.write(bytes(Track.PositionS5 + "\r\n" , "utf-8"))
             time.sleep(0.1) 
             ser.write(bytes(Track.Move + "\r\n" , "utf-8"))
@@ -184,12 +184,12 @@ def main():
                         break
             Atrain()
             time.sleep(5)
-            os.remove("./run/s5A.run")
+            os.remove("/home/pi/paypaymachine/run/s5A.run")
     with serial.Serial(p2, 57600) as ser2:
         if track == "B":
-            if os.path.isfile("./run/s5A.run"):
+            if os.path.isfile("/home/pi/paypaymachine/run/s5A.run"):
                 sys.exit(1)
-            open("./run/s5B.run", 'w').close()
+            open("/home/pi/paypaymachine/run/s5B.run", 'w').close()
             ser2.write(bytes(Track.PositionS5 + "\r\n" , "utf-8"))
             time.sleep(0.1) 
             ser2.write(bytes(Track.Move + "\r\n" , "utf-8"))
@@ -210,9 +210,9 @@ def main():
                         break
             Btrain()
             time.sleep(5)
-            os.remove("./run/s5B.run")
+            os.remove("/home/pi/paypaymachine/run/s5B.run")
     time.sleep(1)
-    os.remove("./run/s5.run")
-    open("./done/s5.done", 'w').close()
+    os.remove("/home/pi/paypaymachine/run/s5.run")
+    open("/home/pi/paypaymachine/done/s5.done", 'w').close()
 if __name__ == "__main__":
     main()
