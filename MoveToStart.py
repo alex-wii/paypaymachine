@@ -6,7 +6,7 @@ import time
 from AllConfig import Track
 def Moving():
     usbpath =""
-    with open("./TrackUsb.json", "r") as obj1:
+    with open("/home/pi/paypaymachine/TrackUsb.json", "r") as obj1:
         usbpath = json.load(obj1)
     AUsb=usbpath[Track.ATrainID]
     BUsb=usbpath[Track.BTrainID]

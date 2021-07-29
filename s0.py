@@ -5,7 +5,7 @@ import json
 import time
 import os
 import sys
-from AllConfig import J2,J3,J17,J33,J34,Track,Icedata
+from AllConfig import J2,J3,J17,J33,J34,Track
 from pca9675 import PCA9675I2C
 
 pcaR=PCA9675I2C(address=0x27,busnum=1)
@@ -20,7 +20,9 @@ pca.output(J17.pin4,1)  ### B道第一管落杯   ###
 pca.output(J17.pin6,1)  ### A道第二管落杯   ###
 pca.output(J17.pin8,1)  ### B道第二管落杯   ###
 pca.output(J34.pin9,1)  ### 爪夾   ###
-pca.output(J33.pin4,1)  ### 落冰推桿    ###
+pca.output(J33.pin2,1)  ### 落冰推桿  ###
+pca.output(J33.pin4,1)  ### 冰電磁閥    ###
+
 
 track=sys.argv[1]
 ice=sys.argv[2]
@@ -65,7 +67,8 @@ def main():
                 while pcaR.input(J3.pin8) == 0 :
                     if pcaR.input(J3.pin2) != 0 :
                         pca.output(J17.pin2,0)      ### 捲杯器動作 ###
-                        pca.output(J33.pin4,1)      ### 推桿到A ###
+                        time.sleep(0.1)
+                        pca.output(J33.pin2,1)      ### 推桿到A ###
                         while True:
                             if pcaR.input(J3.pin8) != 0 :
                                 pca.output(J17.pin2,1)  ### 關閉落杯器  ###
@@ -90,9 +93,11 @@ def main():
                                 if  bin == "1":
                                     break
                         time.sleep(1)
-                        pca.output(J33.pin2,0)  ###電磁閥開啟###
+                        pca.output(J33.pin4,0)  ###電磁閥開啟###
                         time.sleep(opentime)   ###0,3,6,9###
-                        pca.output(J33.pin2,1)  ###電磁閥關閉###
+                        pca.output(J33.pin4,1)  ###電磁閥關閉###
+                        time.sleep(5)
+                        print("A1做完囉")
                         os.remove("./run/s0A.run")
             if pcaR.input(J3.pin2) == 0 :
                 ser.write(bytes(Track.PositionCup2 + "\r\n" , "utf-8"))
@@ -115,7 +120,8 @@ def main():
                             break
                 if pcaR.input(J3.pin5) != 0 :   
                     pca.output(J17.pin4,0)      ### 捲杯器動作 ###
-                    pca.output(J33.pin4,1)      ### 推桿到A ###
+                    time.sleep(0.1)
+                    pca.output(J33.pin2,1)      ### 推桿到A ###
                     while True:
                         if pcaR.input(J3.pin8) != 0 :
                             pca.output(J17.pin4,1)  ### 關閉落杯器 ###
@@ -140,10 +146,12 @@ def main():
                             if  bin == "1":
                                 break
                     time.sleep(1)
-                    pca.output(J33.pin2,0)  ###電磁閥開啟###
+                    pca.output(J33.pin4,0)  ###電磁閥開啟###
                     time.sleep(opentime)   ###0,3,6,9###
-                    pca.output(J33.pin2,1)  ###電磁閥關閉###
-            os.remove("./run/s0A.run")
+                    pca.output(J33.pin4,1)  ###電磁閥關閉###
+                    time.sleep(5)
+                    print("A2做完囉")
+                    os.remove("./run/s0A.run")
     with serial.Serial(p2, 57600) as ser2:
         if track == "B":
             if os.path.isfile("./run/s0A.run"):
@@ -173,7 +181,8 @@ def main():
                 while pcaR.input(J2.pin8) == 0 :
                     if pcaR.input(J2.pin2) != 0 :  
                         pca.output(J17.pin6,0)    ### 捲杯器動作 ###
-                        pca.output(J33.pin4,0)      ### 推桿到B ###
+                        time.sleep(0.1)
+                        pca.output(J33.pin2,0)      ### 推桿到B ###
                         while True:
                             if pcaR.input(J2.pin8) != 0 :
                                 pca.output(J17.pin6,1)  ### 關閉落杯器 ###
@@ -198,9 +207,11 @@ def main():
                                 if  bin == "1":
                                     break
                         time.sleep(1)
-                        pca.output(J33.pin2,0)  ###電磁閥開啟###
+                        pca.output(J33.pin4,0)  ###電磁閥開啟###
                         time.sleep(opentime)   ###0,3,6,9###
-                        pca.output(J33.pin2,1)  ###電磁閥關閉###
+                        pca.output(J33.pin4,1)  ###電磁閥關閉###
+                        time.sleep(5)
+                        print("B1做完囉")
                         os.remove("./run/s0B.run")
             if pcaR.input(J2.pin2) == 0 :
                 ser2.write(bytes(Track.PositionCup2 + "\r\n" , "utf-8"))
@@ -221,9 +232,10 @@ def main():
                         # print(bin,type(bin))
                         if  bin == "1":
                             break
-                if pcaR.input(J3.pin5) != 0 :   
+                if pcaR.input(J2.pin5) != 0 :   
                     pca.output(J17.pin8,0)      ### 捲杯器動作 ###
-                    pca.output(J33.pin4,0)      ### 推桿到A ###
+                    time.sleep(0.1)
+                    pca.output(J33.pin2,0)      ### 推桿到A ###
                     while True:
                         if pcaR.input(J2.pin8) != 0 :
                             pca.output(J17.pin8,1)  ### 關閉落杯器 ###
@@ -248,10 +260,13 @@ def main():
                             if  bin == "1":
                                 break
                     time.sleep(1)
-                    pca.output(J33.pin2,0)  ###電磁閥開啟###
+                    pca.output(J33.pin4,0)  ###電磁閥開啟###
                     time.sleep(opentime)   ###0,3,6,9###
-                    pca.output(J33.pin2,1)  ###電磁閥關閉###
-            os.remove("./run/s0B.run")
+                    pca.output(J33.pin4,1)  ###電磁閥關閉###
+                    time.sleep(5)
+                    print("B2做完囉")
+                    os.remove("./run/s0B.run")
+    time.sleep(1)
     os.remove("./run/s0.run")
     open("./done/s0.done", 'w').close()
     

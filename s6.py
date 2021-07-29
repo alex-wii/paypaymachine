@@ -319,9 +319,9 @@ def main():
             time.sleep(0.5)
             serP.write([2,0,6,1,70,0,0,0,0,77,3])
             time.sleep(9.9865)   ### 轉盤轉到客人取杯位置之時間(須測試)  ###
-            while pcaR.input(J3.pin4) != 0 : ###   截斷sensor偵測到杯子    ###
-                pca.output(J34.pin4,0)
-                time.sleep(5)    ### 等客人拿杯子的時間 ###
+            # while pcaR.input(J3.pin5) != 0 : ###   截斷sensor偵測到杯子    ###
+            #     pca.output(J34.pin4,0)
+            #     time.sleep(5)    ### 等客人拿杯子的時間 ###
             pca.output(J34.pin4,0)
             serY.close()
             serZ.close()
@@ -566,14 +566,15 @@ def main():
             time.sleep(0.5)
             serP.write([2,0,6,1,70,0,0,0,0,77,3])
             time.sleep(9.9865)   ### 轉盤轉到客人取杯位置之時間(須測試)  ###
-            while pcaR.input(J3.pin4) != 0 : ###   截斷sensor偵測到杯子    ###
-                pca.output(J34.pin4,0)
-                time.sleep(5)    ### 等客人拿杯子的時間 ###
+            # while pcaR.input(J3.pin5) != 0 : ###   截斷sensor偵測到杯子    ###
+            #     pca.output(J34.pin4,0)
+            #     time.sleep(5)    ### 等客人拿杯子的時間 ###
             pca.output(J34.pin4,0)
             serY.close()
             serZ.close()
             serP.close()
         os.remove("./run/s6B.run")
+    time.sleep(1)
     os.remove("./run/s6.run")
     open("./done/s6.done", 'w').close()
     open(f"./done/{ordernumber}.done", 'w').close()

@@ -191,21 +191,29 @@ def testiopca(pca):
     #     input('press off done')
 
 def testIO():
-    pcaR=PCA9675I2C(address=0x11,busnum=1)
-    pcaR=PCA9675I2C(address=0x15,busnum=1)
-    testiopca(pcaR)
-
- 
+    # pcaR=PCA9675I2C(address=0x1c,busnum=1)
+    # testiopca(pcaR)
+    # pcaR.output(3,0)
+    # pcaR.output(2,0)
+    # pcaR.output(1,0)
+    # pcaR.output(0,0)
+    # pcaR=PCA9675I2C(address=0x11,busnum=1)
+    # testiopca(pcaR)
+    # pcaR=PCA9675I2C(address=0x15,busnum=1)
+    # testiopca(pcaR)
+    # pcaR.output(0,0)
+    # sleep(10)
+    # pcaR.output(0,1)
     pcaR=PCA9675I2C(address=0x28,busnum=1)
-    testiopca(pcaR)
+    # testiopca(pcaR)
     
 
-
-    # pcaR=PCA9675I2C(address=0x27,busnum=1)
+    pcaR=PCA9675I2C(address=0x26,busnum=1)
+    pcaR=PCA9675I2C(address=0x27,busnum=1)
     # testiopca(pcaR)
-    # pcaR=PCA9675I2C(address=0x2a,busnum=1)
+    pcaR=PCA9675I2C(address=0x2a,busnum=1)
     # testiopca(pcaR)
-    # pcaR=PCA9675I2C(address=0x2c,busnum=1)
+    pcaR=PCA9675I2C(address=0x2c,busnum=1)
     # testiopca(pcaR)
     # pcaR=PCA9675I2C(address=0x1c,busnum=1)
     # testiopca(pcaR)

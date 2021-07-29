@@ -12,19 +12,18 @@ from AllConfig import J17,J33,J34,Track
 
 
 ###     給料模組    ###
-doorA=PCA9675I2C(address=0x2c,busnum=1)      ###     A道電磁閥    ###
-doorB=PCA9675I2C(address=0x2a,busnum=1)      ###     B道電磁閥    ###
-for i in range(16):
-        # print(f'setup pin{i} is 0')    
-        doorA.setup(i,0)
-        doorB.setup(i,0)
 pump=PCA9675I2C(address=0x28,busnum=1)      ###     幫浦      ###
 for i in range(16):
     pump.setup(i,0)
-    time.sleep(0.1)
-    doorA.output(i,1)
-    doorB.output(i,1)
     pump.output(i,1)
+doorA=PCA9675I2C(address=0x2c,busnum=1)      ###     A道電磁閥    ###
+for i in range(16):
+    doorA.setup(i,0)
+    doorA.output(i,1)
+doorB=PCA9675I2C(address=0x2a,busnum=1)      ###     B道電磁閥    ###
+for i in range(16):
+    doorB.setup(i,0)
+    doorB.output(i,1)
 ###     沖茶模組    ###
 # teapump=PCA9675I2C(address=0x2e,busnum=1)      ###     幫浦1     ###
 # for i in range(16):
@@ -40,6 +39,7 @@ for i in range(16):
     # teadoorA.output(i,1)
     # teadoorB.output(i,1)
 
+iocontrolsleep = 1
 
 track=sys.argv[1]
 timedata=sys.argv[2]
@@ -53,97 +53,97 @@ time4=int(timedata[14:16])
 time5=int(timedata[18:20])
 def Atrain():   
         if time1 !=0 :
-            time.sleep(0.1)
+            time.sleep(iocontrolsleep)
             doorA.output(J17.pin4,0) 
-            time.sleep(0.1)
+            time.sleep(iocontrolsleep)
             pump.output(J17.pin4,0) 
             time.sleep(time1)
-            doorA.output(J17.pin4,1)
-            time.sleep(0.1)
             pump.output(J17.pin4,1)
+            time.sleep(iocontrolsleep)
+            doorA.output(J17.pin4,1)
         if time2 !=0 :
-            time.sleep(0.1)
+            time.sleep(iocontrolsleep)
             doorA.output(J17.pin6,0) 
-            time.sleep(0.1)
+            time.sleep(iocontrolsleep)
             pump.output(J17.pin6,0)
             time.sleep(time2)
-            doorA.output(J17.pin6,1)
-            time.sleep(0.1)
             pump.output(J17.pin6,1)
+            time.sleep(iocontrolsleep)
+            doorA.output(J17.pin6,1)
         if time3 !=0 :
-            time.sleep(0.1)
+            time.sleep(iocontrolsleep)
             doorA.output(J17.pin8,0)  
-            time.sleep(0.1)
+            time.sleep(iocontrolsleep)
             pump.output(J17.pin8,0)
             time.sleep(time3)
-            doorA.output(J17.pin8,1)
-            time.sleep(0.1)
             pump.output(J17.pin8,1)
-        # if time4 !=0 :
-        #     time.sleep(0.1)
-        #     teadoorA.output(J33.pin6,0) 
-        #     time.sleep(0.1)
-        #     teapump.output(J17.pin6,0)
-        #     time.sleep(time4)
-            # teadoorA.output(J33.pin6,1)
-        #     time.sleep(0.1)
-        #     teapump.output(J17.pin6,1)
+            time.sleep(iocontrolsleep)
+            doorA.output(J17.pin8,1)
+        if time4 !=0 :      ### 暫時茶  ###
+            time.sleep(iocontrolsleep)
+            doorA.output(J34.pin2,0)  
+            time.sleep(iocontrolsleep)
+            pump.output(J34.pin2,0)
+            time.sleep(time4)
+            pump.output(J34.pin2,1)
+            time.sleep(iocontrolsleep)
+            doorA.output(J34.pin2,1)
         # if time5 !=0 :
-        #     time.sleep(0.1)
+        #     time.sleep(iocontrolsleep)
         #     teadoorA.output(J33.pin8,0)  
-        #     time.sleep(0.1)
+        #     time.sleep(iocontrolsleep)
         #     teapump.output(J17.pin8,0)
         #     time.sleep(time5)
-            # teadoorA.output(J33.pin8,1)
-        #     time.sleep(0.1)
         #     teapump.output(J17.pin8,1)
+        #     time.sleep(iocontrolsleep)
+        #     teadoorA.output(J33.pin8,1)
 
 def Btrain():
         if time1 !=0 :
-            time.sleep(0.1)
+            time.sleep(iocontrolsleep)
             doorB.output(J17.pin4,0) 
-            time.sleep(0.1)
+            time.sleep(iocontrolsleep)
             pump.output(J17.pin4,0) 
             time.sleep(time1)
-            doorB.output(J17.pin4,1)
-            time.sleep(0.1)
             pump.output(J17.pin4,1)
+            time.sleep(iocontrolsleep)
+            doorB.output(J17.pin4,1)
         if time2 !=0 :
-            time.sleep(0.1)
+            time.sleep(iocontrolsleep)
             doorB.output(J17.pin6,0) 
-            time.sleep(0.1)
+            time.sleep(iocontrolsleep)
             pump.output(J17.pin6,0)
             time.sleep(time2)
-            doorB.output(J17.pin6,1)
-            time.sleep(0.1)
             pump.output(J17.pin6,1)
+            time.sleep(iocontrolsleep)
+            doorB.output(J17.pin6,1)
         if time3 !=0 :
-            time.sleep(0.1)
+            time.sleep(iocontrolsleep)
             doorB.output(J17.pin8,0)  
-            time.sleep(0.1)
+            time.sleep(iocontrolsleep)
             pump.output(J17.pin8,0)
             time.sleep(time3)
-            doorB.output(J17.pin8,1)
-            time.sleep(0.1)
             pump.output(J17.pin8,1)
-        # if time4 !=0 :
-        #     time.sleep(0.1)
-        #     teadoorB.output(J34.pin6,0) 
-        #     time.sleep(0.1)
-        #     teapump.output(J17.pin6,0)
-        #     time.sleep(time4)
-            # teadoorB.output(J34.pin6,1)
-        #     time.sleep(0.1)
-        #     teapump.output(J17.pin6,1)
+            time.sleep(iocontrolsleep)
+            doorB.output(J17.pin8,1)
+        if time4 !=0 :      ### 暫時茶  ###
+            time.sleep(iocontrolsleep)
+            doorB.output(J34.pin2,0)  
+            time.sleep(iocontrolsleep)
+            pump.output(J34.pin2,0)
+            time.sleep(time4)
+            pump.output(J34.pin2,1)
+            time.sleep(iocontrolsleep)
+            doorB.output(J34.pin2,1)
         # if time5 !=0 :
-        #     time.sleep(0.1)
+        #     time.sleep(iocontrolsleep)
         #     teadoorB.output(J34.pin7,0)  
-        #     time.sleep(0.1)
+        #     time.sleep(iocontrolsleep)
         #     teapump.output(J17.pin8,0)
         #     time.sleep(time5)
-            # teadoorB.output(J34.pin7,1)
-        #     time.sleep(0.1)
-        #     teapump.output(J17.pin8,1)
+            # teapump.output(J17.pin8,1)
+        #     time.sleep(iocontrolsleep)
+        #     teadoorB.output(J34.pin7,1)
             
 def main():
     
@@ -183,6 +183,7 @@ def main():
                     if  bin == "1":
                         break
             Atrain()
+            time.sleep(5)
             os.remove("./run/s4A.run")
     with serial.Serial(p2, 57600) as ser2:
         if track == "B":
@@ -208,7 +209,9 @@ def main():
                     if  bin == "1":
                         break
             Btrain()
+            time.sleep(5)
             os.remove("./run/s4B.run")
+    time.sleep(1)
     os.remove("./run/s4.run")
     open("./done/s4.done", 'w').close()
     
