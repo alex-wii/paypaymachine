@@ -54,7 +54,7 @@ def sendAPItoken(cup_num):
     else :
         print('error server api')
         
-sendAPItoken('a1234')
+# sendAPItoken('a1234')
 # def main():    
 #    sendAPItoken()
 #     # report_cup_num("1.2.3.4",'A1234')

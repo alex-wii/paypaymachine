@@ -4,9 +4,10 @@ import os
 import stat
 from alexloger import *
 print("*"*50)
-print("s1ta run")
+
 name = sys.argv[2]
 train = sys.argv[1]
+print(f"{name} run")
 sec = int(sys.argv[3])
 filename = f'./run/{name}.run'
 fileTrainName =  f'./run/{name}{train}.run'
