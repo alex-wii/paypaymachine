@@ -55,10 +55,11 @@ def sendAPItoken(cup_num):
         print('error server api')
         
 # sendAPItoken('a1234')
-# def main():    
-#    sendAPItoken()
-#     # report_cup_num("1.2.3.4",'A1234')
-    
-    
+def main():    
+   sendAPItoken('a1234')
+    # report_cup_num("1.2.3.4",'A1234')
 
 # main()
+
+if __name__ == "__main__":
+    main()

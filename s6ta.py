@@ -1,32 +1,26 @@
-﻿from time import sleep
-import sys
+﻿import serial
+from time import sleep
+# from setting import tdic1,tdic2
+import json
+import time
+import pigpio
 import os
-import stat
-from alexloger import *
-print("*"*50)
-print("s1ta run")
-name = sys.argv[2]
-train = sys.argv[1]
-sec = int(sys.argv[3])
-filename = f'./run/{name}.run'
-fileTrainName =  f'./run/{name}{train}.run'
-fileDoneName = f'./done/{name}.done'
-if os.path.exists(filename):
-    station_logger.info(f"Error:1 , {filename} is run")
-    sys.exit(1)
+import sys
+# sys.path.append('/home/pi/machineT/machine/pca9675')
+from pca9675 import PCA9675I2C
+from AllConfig import J3,J17,J33,J34,Track
 
-station_logger.info(f'{filename},{fileTrainName}')
-open(filename, 'w').close()
-open(fileTrainName, 'w').close()
+# add for web api
+import requests
+import payconfiguration
+import json
+from datetime import datetime
+import test_api
+# add for web api end
 
-
-station_logger.info(f'{"*"*10}')
-station_logger.info(f"ss:{name}{train}")
-
-station_logger.info(f"{name}{train}start wait {sec} sec")
-sleep(sec)
-station_logger.info(f"{name}{train} end wait {sec} sec")
-station_logger.info(f"{sys.argv[1]}{name}done")
-os.remove(filename)
-os.remove(fileTrainName)
-open(fileDoneName, 'w').close()
+    # os.remove("/home/pi/paypaymachine/run/s6.run")
+    # open("/home/pi/paypaymachine/done/s6.done", 'w').close()
+    # open(f"/home/pi/paypaymachine/done/{ordernumber}.done", 'w').close()
+    sendAPItoken(ordernumber)
+if __name__ == "__main__":
+    main()
