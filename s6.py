@@ -15,7 +15,7 @@ import requests
 import payconfiguration
 import json
 from datetime import datetime
-import test_api
+from test_api import sendAPItoken
 # add for web api end
 
 PWM_CONTROL_PIN = 13

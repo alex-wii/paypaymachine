@@ -1,6 +1,8 @@
 import Adafruit_GPIO as GPIO
 import Adafruit_GPIO.I2C as I2C
 from time import sleep
+from AllConfig import J2,J3,J17,J33,J34,Track
+
 # For the PCA 953X and 955X series, the chips with 8 GPIO's have these port numbers
 # The chips with 16 GPIO's have the first port for each type at double these numbers
 # IE The first config port is 6
@@ -203,21 +205,48 @@ def testIO():
     # testiopca(pcaR)
     # pcaR.output(0,0)
     # sleep(10)
-    # pcaR.output(0,1)
-    pcaR=PCA9675I2C(address=0x28,busnum=1)
-    # testiopca(pcaR)
+    # # pcaR.output(0,1)
+    # pcaR=PCA9675I2C(address=0x28,busnum=1)
+    # # testiopca(pcaR)
     
 
-    pcaR=PCA9675I2C(address=0x26,busnum=1)
-    pcaR=PCA9675I2C(address=0x27,busnum=1)
-    # testiopca(pcaR)
-    pcaR=PCA9675I2C(address=0x2a,busnum=1)
-    # testiopca(pcaR)
+    # pcaR=PCA9675I2C(address=0x26,busnum=1)
+    # pcaR=PCA9675I2C(address=0x27,busnum=1)
+    # # testiopca(pcaR)
+    # pcaR=PCA9675I2C(address=0x2a,busnum=1)
+    # # testiopca(pcaR)
+    # pcaR=PCA9675I2C(address=0x2c,busnum=1)
+    # # testiopca(pcaR)
+    # # pcaR=PCA9675I2C(address=0x1c,busnum=1)
+    # # testiopca(pcaR)
+    # pcaR=PCA9675I2C(address=0x18,busnum=1)
+    input('start off')
+    pcaR=PCA9675I2C(address=0x28,busnum=1)
+    testiopca(pcaR)
     pcaR=PCA9675I2C(address=0x2c,busnum=1)
-    # testiopca(pcaR)
-    # pcaR=PCA9675I2C(address=0x1c,busnum=1)
-    # testiopca(pcaR)
-    pcaR=PCA9675I2C(address=0x18,busnum=1)
+    testiopca(pcaR)
+    pcaR=PCA9675I2C(address=0x2A,busnum=1)
+    testiopca(pcaR)
     
+    input('0x2C ')
+    pcaR=PCA9675I2C(address=0x2C,busnum=1)
+    testiopca(pcaR)
+    pcaR.output(J34.pin4,0)
+    input('0x2A')
+    pcaR=PCA9675I2C(address=0x2A,busnum=1)
+    testiopca(pcaR)
+    pcaR.output(J34.pin4,0)
+    input('start 0x28')
+    pcaR=PCA9675I2C(address=0x28,busnum=1)
+    testiopca(pcaR)
+    pcaR.output(J34.pin4,0)
+    input('off all')
+    pcaR=PCA9675I2C(address=0x28,busnum=1)
+    testiopca(pcaR)
+    pcaR=PCA9675I2C(address=0x2c,busnum=1)
+    testiopca(pcaR)
+    pcaR=PCA9675I2C(address=0x2A,busnum=1)
+    testiopca(pcaR)
+    # 冰電磁閥    ###
 if __name__ == '__main__':
     testIO()
