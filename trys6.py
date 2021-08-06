@@ -513,50 +513,61 @@ def main():
                                                         time.sleep(0.1) 
                                                         serZ.write(bytes(Track.Move + "\r\n" , "utf-8"))
                                                         time.sleep(5)   #1:5 2:10 3:25
-                                                        serZ.flushInput() 
-                                                        serZ.write(bytes(Track.CheckSign + "\r\n" , "utf-8"))
+                                                        while True:
+                                                             serZ.flushInput() 
+                                                             serZ.write(bytes(Track.CheckSign + "\r\n" , "utf-8"))
+                                                             time.sleep(0.1)
+                                                             address9=serZ.read(13).decode("utf-8")
+                                                             na9=address9[11:13]
+                                                             bc9 = " ".join(format(ord(c), "b") for c in na9)
+                                                             if len(bc9) == 15:
+                                                                 bin9=bc9[13]
+                                                                 if  bin9 == "1":    ### 出杯sensor感應到杯子，張爪，Z道上至0 ###
+                                                                     break
+                                                        #while pcaR.input(J3.pin2) != 0 :
                                                         time.sleep(0.1)
-                                                        address9=serZ.read(13).decode("utf-8")
-                                                        na9=address9[11:13]
-                                                        bc9 = " ".join(format(ord(c), "b") for c in na9)
-                                                        bin9=bc9[13]
-                                                        if  bin9 == "1":    ### 出杯sensor感應到杯子，張爪，Z道上至0 ###
-                                                            while pcaR.input(J3.pin2) != 0 :
-                                                                pca.output(J34.pin9,1)  
-                                                                time.sleep(0.5)
-                                                                serZ.write(bytes(Track.ZTrackUp + "\r\n" , "utf-8"))
-                                                                time.sleep(0.1) 
-                                                                serZ.write(bytes(Track.Move + "\r\n" , "utf-8"))
-                                                                time.sleep(5)   #1:5 2:10 3:25
-                                                                serZ.flushInput() 
-                                                                serZ.write(bytes(Track.CheckSign + "\r\n" , "utf-8"))
-                                                                time.sleep(0.1)
-                                                                address10=serZ.read(13).decode("utf-8")
-                                                                na10=address10[11:13]
-                                                                bc10 = " ".join(format(ord(c), "b") for c in na10)
-                                                                bin10=bc10[13]
-                                                                if  bin10 == "1":
-                                                                    pca.output(J34.pin4,1)     ## 1啟動,0停止  ##  
-                                                                    time.sleep(0.1) 
-                                                                    #stop
-                                                                    serP.write([2,0,6,1,70,0,0,0,0,77,3])
-                                                                    time.sleep(0.1) 
-                                                                    #訂單編號
-                                                                    # testchk(ser)
-                                                                    serP.write([2,0,9,0,61,1,5,asciinum[0],asciinum[1],asciinum[2],asciinum[3],asciinum[4],Verificationcode,3])
-                                                                    time.sleep(0.5)
-                                                                    #print out
-                                                                    serP.write([2,0,6,1,70,4,0,0,0,81,3])
-                                                                    time.sleep(0.5)
-                                                                    serP.write([2,0,6,1,70,0,0,0,0,77,3])
-                                                                    time.sleep(9.9865)   ### 轉盤轉到客人取杯位置之時間(須測試)  ###
-                                                                    while pcaR.input(J3.pin4) != 0 : ###   截斷sensor偵測到杯子    ###
-                                                                        pca.output(J34.pin4,0)
-                                                                        time.sleep(5)    ### 等客人拿杯子的時間 ###
-                                                                    pca.output(J34.pin4,0)
-                                                                    serZ.close()
-                                                                    serP.close()
-    #                                                                 os.remove("./run/s6B.run")
+                                                        pca.output(J34.pin9,1)  
+                                                        time.sleep(1)
+                                                        serZ.write(bytes(Track.ZTrackUp + "\r\n" , "utf-8"))
+                                                        time.sleep(0.1) 
+                                                        serZ.write(bytes(Track.Move + "\r\n" , "utf-8"))
+                                                        while True:
+                                                                 serZ.flushInput() 
+                                                                 serZ.write(bytes(Track.CheckSign + "\r\n" , "utf-8"))
+                                                                 time.sleep(0.1)
+                                                                 address10=serZ.read(13).decode("utf-8")
+                                                                 na10=address10[11:13]
+                                                                 bc10 = " ".join(format(ord(c), "b") for c in na10)
+                                                                 if len(bc10) == 15:
+                                                                     bin10=bc10[13]
+                                                                     if  bin10 == "1":
+                                                                         break
+                                                        time.sleep(0.1)
+                                                        serY.write(bytes(Track.YTrackA + "\r\n" , "utf-8"))
+                                                        time.sleep(0.1) 
+                                                        serY.write(bytes(Track.Move + "\r\n" , "utf-8"))
+                                                        time.sleep(0.1)
+                                                        pca.output(J34.pin4,1)     ## 1啟動,0停止  ##  
+                                                        time.sleep(0.1) 
+                                                        #stop
+                                                        serP.write([2,0,6,1,70,0,0,0,0,77,3])
+                                                        time.sleep(0.1) 
+                                                        #訂單編號
+                                                        # testchk(ser)
+                                                        serP.write([2,0,9,0,61,1,5,asciinum[0],asciinum[1],asciinum[2],asciinum[3],asciinum[4],Verificationcode,3])
+                                                        time.sleep(0.5)
+                                                        #print out
+                                                        serP.write([2,0,6,1,70,4,0,0,0,81,3])
+                                                        time.sleep(0.5)
+                                                        serP.write([2,0,6,1,70,0,0,0,0,77,3])
+                                                        time.sleep(9.9865)   ### 轉盤轉到客人取杯位置之時間(須測試)  ###
+                                                        #while pcaR.input(J3.pin4) != 0 : ###   截斷sensor偵測到杯子    ###
+                                                        #    pca.output(J34.pin4,0)
+                                                        #    time.sleep(5)    ### 等客人拿杯子的時間 ###
+                                                        pca.output(J34.pin4,0)
+                                                        serZ.close()
+                                                        serP.close()
+    #                                                   os.remove("./run/s6B.run")
     # os.remove("./run/s6.run")
     # open("./done/s6.done", 'w').close()
     

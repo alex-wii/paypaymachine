@@ -13,21 +13,20 @@ for pin in range(16):
     pcaR.setup(pin,1)
     
 pca=PCA9675I2C(address=0x18,busnum=1)
-for i in range(16):
-    pca.setup(i,0)
-pca.output(J17.pin2,1)  ### A道第一管落杯   ###
-pca.output(J17.pin4,1)  ### B道第一管落杯   ###
-pca.output(J17.pin6,1)  ### A道第二管落杯   ###
-pca.output(J17.pin8,1)  ### B道第二管落杯   ###
-pca.output(J34.pin9,1)  ### 爪夾   ###
-pca.output(J33.pin2,1)  ### 落冰推桿  ###
-pca.output(J33.pin4,1)  ### 冰電磁閥    ###
-
+#for i in range(16):
+#    pca.setup(i,0)
+#pca.output(J17.pin2,1)  ### A道第一管落杯   ###
+#pca.output(J17.pin4,1)  ### B道第一管落杯   ###
+#pca.output(J17.pin6,1)  ### A道第二管落杯   ###
+#pca.output(J17.pin8,1)  ### B道第二管落杯   ###
+#pca.output(J34.pin9,1)  ### 爪夾   ###開爪
+#pca.output(J33.pin4,1)  ### 落冰推桿    ###
+pca.output(J34.pin4,0)  ### 出杯轉盤停止    ###
+pca.output(J34.pin2,0)  ### 出杯轉盤方向    ###
 
 track=sys.argv[1]
 ice=sys.argv[2]
 opentime=int(ice)
-
 
 def main():
     usbpath =''
@@ -93,10 +92,13 @@ def main():
                                 if  bin == "1":
                                     break
                         time.sleep(1)
-                        pca.output(J33.pin4,0)  ###電磁閥開啟###
-                        time.sleep(opentime)   ###0,3,6,9###
-                        pca.output(J33.pin4,1)  ###電磁閥關閉###
-                        time.sleep(5)
+                        for i in range(opentime*2): #Evan 點放出冰
+                           time.sleep(0.3)
+                           pca.output(J33.pin4,0)  ###電磁閥開啟###
+                           #time.sleep(opentime)   ###0,3,6,9###
+                           time.sleep(0.3)
+                           pca.output(J33.pin4,1)  ###電磁閥關閉###
+                        time.sleep(2)
                         print("A1做完囉")
                         os.remove("/home/pi/paypaymachine/run/s0A.run")
             if pcaR.input(J3.pin2) == 0 :
@@ -146,10 +148,13 @@ def main():
                             if  bin == "1":
                                 break
                     time.sleep(1)
-                    pca.output(J33.pin4,0)  ###電磁閥開啟###
-                    time.sleep(opentime)   ###0,3,6,9###
-                    pca.output(J33.pin4,1)  ###電磁閥關閉###
-                    time.sleep(5)
+                    for i in range(opentime*2): #Evan 點放出冰
+                       time.sleep(0.3)
+                       pca.output(J33.pin4,0)  ###電磁閥開啟###
+                       #time.sleep(opentime)   ###0,3,6,9###
+                       time.sleep(0.3)
+                       pca.output(J33.pin4,1)  ###電磁閥關閉###
+                    time.sleep(2)
                     print("A2做完囉")
                     os.remove("/home/pi/paypaymachine/run/s0A.run")
     with serial.Serial(p2, 57600) as ser2:
@@ -207,10 +212,13 @@ def main():
                                 if  bin == "1":
                                     break
                         time.sleep(1)
-                        pca.output(J33.pin4,0)  ###電磁閥開啟###
-                        time.sleep(opentime)   ###0,3,6,9###
-                        pca.output(J33.pin4,1)  ###電磁閥關閉###
-                        time.sleep(5)
+                        for i in range(opentime*2): #Evan 點放出冰
+                           time.sleep(0.3)
+                           pca.output(J33.pin4,0)  ###電磁閥開啟###
+                           #time.sleep(opentime)   ###0,3,6,9###
+                           time.sleep(0.3)
+                           pca.output(J33.pin4,1)  ###電磁閥關閉###
+                        time.sleep(2)
                         print("B1做完囉")
                         os.remove("/home/pi/paypaymachine/run/s0B.run")
             if pcaR.input(J2.pin2) == 0 :
@@ -260,10 +268,13 @@ def main():
                             if  bin == "1":
                                 break
                     time.sleep(1)
-                    pca.output(J33.pin4,0)  ###電磁閥開啟###
-                    time.sleep(opentime)   ###0,3,6,9###
-                    pca.output(J33.pin4,1)  ###電磁閥關閉###
-                    time.sleep(5)
+                    for i in range(opentime*2): #Evan 點放出冰
+                       time.sleep(0.3)
+                       pca.output(J33.pin4,0)  ###電磁閥開啟###
+                       #time.sleep(opentime)   ###0,3,6,9###
+                       time.sleep(0.3)
+                       pca.output(J33.pin4,1)  ###電磁閥關閉###
+                    time.sleep(2)
                     print("B2做完囉")
                     os.remove("/home/pi/paypaymachine/run/s0B.run")
     time.sleep(1)

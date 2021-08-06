@@ -28,14 +28,16 @@ for pin in range(16):
     pcaR.setup(pin,1)
     
 pca=PCA9675I2C(address=0x18,busnum=1)
-for i in range(16):
-    pca.setup(i,0)
-pca.output(J17.pin2,1)  ### A道第一管落杯   ###
-pca.output(J17.pin4,1)  ### B道第一管落杯   ###
-pca.output(J17.pin6,1)  ### A道第二管落杯   ###
-pca.output(J17.pin8,1)  ### B道第二管落杯   ###
-pca.output(J34.pin9,1)  ### 爪夾   ###
-pca.output(J33.pin4,1)  ### 落冰推桿    ###
+#for i in range(16):
+#    pca.setup(i,0)
+#pca.output(J17.pin2,1)  ### A道第一管落杯   ###
+#pca.output(J17.pin4,1)  ### B道第一管落杯   ###
+#pca.output(J17.pin6,1)  ### A道第二管落杯   ###
+#pca.output(J17.pin8,1)  ### B道第二管落杯   ###
+#pca.output(J34.pin9,1)  ### 爪夾   ###
+#pca.output(J33.pin4,1)  ### 落冰推桿    ###
+pca.output(J34.pin4,0)  ### 出杯轉盤停止    ###
+pca.output(J34.pin2,0)  ### 出杯轉盤方向    ###
 
 
 track=sys.argv[1]
@@ -312,7 +314,7 @@ def main():
             time.sleep(0.1) 
             serY.write(bytes(Track.Move + "\r\n" , "utf-8"))
             time.sleep(0.1)
-            pca.output(J34.pin4,1)     ## 1啟動,0停止  ##  
+            pca.output(J34.pin4,1)     ##轉盤 1啟動,0停止  ##  
             time.sleep(0.1) 
             #stop
             serP.write([2,0,6,1,70,0,0,0,0,77,3])
@@ -329,7 +331,7 @@ def main():
             # while pcaR.input(J3.pin5) != 0 : ###   截斷sensor偵測到杯子    ###
             #     pca.output(J34.pin4,0)
             #     time.sleep(5)    ### 等客人拿杯子的時間 ###
-            pca.output(J34.pin4,0)
+            pca.output(J34.pin4,0) #轉盤停止#
             serY.close()
             serZ.close()
             serP.close()

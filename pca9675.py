@@ -33,15 +33,14 @@ class PCA9675I2C(GPIO.BaseGPIO):
         busnum = busnum or i2c.get_default_bus()
         self._device = i2c.get_i2c_device(address, busnum, **kwargs)
         self.num_gpios = num_gpios
-        
+        print('Evan Add')
         if self.num_gpios <= 8:
-            self.iodir = self._device.readU8(CONFIG_PORT)
-            self.outputvalue = self._device.readU8(OUTPUT_PORT)
-
+            self.iodir = 0xFF #self._device.readU8(CONFIG_PORT)
+            self.outputvalue = self._device.readRaw8()
         elif self.num_gpios > 8 and self.num_gpios <= 16:
-            self.iodir = self._device.readU16(CONFIG_PORT<< 1)
-            self.outputvalue = self._device.readU16(OUTPUT_PORT << 1)
-
+            self.iodir = 0xFFFF #self._device.readU16(CONFIG_PORT<< 1)
+            self.outputvalue = 0xFFFF #value1 | (value2 << 8)
+            
     def _changebit(self, bitmap, bit, value):
         assert value == 1 or value == 0, "Value is %s must be 1 or 0" % value
         if value == 0:
@@ -58,9 +57,10 @@ class PCA9675I2C(GPIO.BaseGPIO):
         assert pin >= 0 and pin < self.num_gpios, "Pin number %s is invalid, only 0-%s are valid" % (pin, self.num_gpios)
         if not portstate:
           if self.num_gpios <= 8:
-             portstate = self._device.readU8(port)
+             portstate = self._device.readRaw8()
           elif self.num_gpios > 8 and self.num_gpios <= 16:
              portstate = self._device.readU16(port << 1)
+
         newstate = self._changebit(portstate, pin, value)
         if self.num_gpios <= 8:
             self._device.write8(port, newstate)
@@ -78,13 +78,14 @@ class PCA9675I2C(GPIO.BaseGPIO):
         return self.iodir
 
     def output(self, pin, value):
-        assert self.iodir & (1 << pin) == 0, "Pin %s not set to output" % pin
+        #assert self.iodir & (1 << pin) == 0, "Pin %s not set to output" % pin
         self.outputvalue = self._readandchangepin(OUTPUT_PORT, pin, value, self.outputvalue)
         return self.outputvalue
 
     def input(self, pin):
-        assert self.iodir & (1 << pin) != 0, "Pin %s not set to input" % pin
+        #assert self.iodir & (1 << pin) != 0, "Pin %s not set to input" % pin
         value = self._device.readRaw8()
+        
         # if self.num_gpios <= 8:
         #     value = self._device.readU8(INPUT_PORT)
         # elif self.num_gpios > 8 and self.num_gpios <= 16:

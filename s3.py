@@ -9,33 +9,32 @@ import sys
 # sys.path.append('/home/pi/machineT/machine/pca9675')
 from pca9675 import PCA9675I2C  
 from AllConfig import J17,J33,J34,Track
-
-###     給料模組    ###
+###    給料模組    ###
 pump=PCA9675I2C(address=0x15,busnum=1)      ###     幫浦      ###
-for i in range(16):
-    pump.setup(i,0)
+#for i in range(16):
+    #pump.setup(i,0)
     # time.sleep(0.1)
-    pump.output(i,1)
+    #pump.output(i,1)
 doorA=PCA9675I2C(address=0x1c,busnum=1)      ###     A道電磁閥    ###
-for i in range(16):
-    doorA.setup(i,0)
-    doorA.output(i,1)
+#for i in range(16):
+    #doorA.setup(i,0)
+    #doorA.output(i,1)
 doorB=PCA9675I2C(address=0x11,busnum=1)      ###     B道電磁閥    ###
-for i in range(16):
-    doorB.setup(i,0)
-    doorB.output(i,1)
+#for i in range(16):
+    #doorB.setup(i,0)
+    #doorB.output(i,1)
 pump1=PCA9675I2C(address=0x28,busnum=1)      ###     幫浦1      ###
-for i in range(16):
-    pump1.setup(i,0)
-    pump1.output(i,1)
+#for i in range(16):
+    #pump1.setup(i,0)
+    #pump1.output(i,1)
 doorA1=PCA9675I2C(address=0x2c,busnum=1)      ###     A道電磁閥1    ###
-for i in range(16):
-    doorA1.setup(i,0)
-    doorA1.output(i,1)
+#for i in range(16):
+    #doorA1.setup(i,0)
+    #doorA1.output(i,1)
 doorB1=PCA9675I2C(address=0x2a,busnum=1)      ###     B道電磁閥1    ###
-for i in range(16):
-    doorB1.setup(i,0)
-    doorB1.output(i,1)
+#for i in range(16):
+    #doorB1.setup(i,0)
+    #doorB1.output(i,1)
 ###     沖茶模組    ###
 # teapump=PCA9675I2C(address=0x2e,busnum=1)      ###     幫浦     ###
 # for i in range(16):
@@ -52,7 +51,7 @@ for i in range(16):
     # teadoorB.output(i,1)
 # pcaR=PCA9675I2C(address=0x26,busnum=1)
 
-iocontrolsleep = 1
+iocontrolsleep = 0.5
 
 track=sys.argv[1]
 timedata=sys.argv[2]
@@ -76,13 +75,13 @@ def Atrain():
             doorA.output(J34.pin6,1)
         if time2 !=0 :
             time.sleep(iocontrolsleep)
-            doorA.output(J34.pin7,0) 
+            doorA1.output(J34.pin7,0) 
             time.sleep(iocontrolsleep)
-            pump.output(J34.pin7,0)
+            pump1.output(J34.pin7,0)
             time.sleep(time2)
-            pump.output(J34.pin7,1)
+            pump1.output(J34.pin7,1)
             time.sleep(iocontrolsleep)
-            doorA.output(J34.pin7,1)
+            doorA1.output(J34.pin7,1)
         if time3 !=0 :
             time.sleep(iocontrolsleep)
             doorA1.output(J17.pin2,0)  
@@ -92,7 +91,7 @@ def Atrain():
             pump1.output(J17.pin2,1)
             time.sleep(iocontrolsleep)
             doorA1.output(J17.pin2,1)
-        if time4 !=0 :      ### 暫時糖  ###
+        if time4 !=0 :      ### 甜度糖_蔗糖_寡糖  ###
             time.sleep(iocontrolsleep)
             doorA1.output(J34.pin9,0)  
             time.sleep(iocontrolsleep)
@@ -122,13 +121,13 @@ def Btrain():
             doorB.output(J34.pin6,1)
         if time2 !=0 :
             time.sleep(iocontrolsleep)
-            doorB.output(J34.pin7,0) 
+            doorB1.output(J34.pin7,0) 
             time.sleep(iocontrolsleep)
-            pump.output(J34.pin7,0)
+            pump1.output(J34.pin7,0)
             time.sleep(time2)
-            pump.output(J34.pin7,1)
+            pump1.output(J34.pin7,1)
             time.sleep(iocontrolsleep)
-            doorB.output(J34.pin7,1)
+            doorB1.output(J34.pin7,1)
         if time3 !=0 :
             time.sleep(iocontrolsleep)
             doorB1.output(J17.pin2,0)  
@@ -138,7 +137,7 @@ def Btrain():
             pump1.output(J17.pin2,1)
             time.sleep(iocontrolsleep)
             doorB1.output(J17.pin2,1)
-        if time4 !=0 :      ### 暫時糖  ###
+        if time4 !=0 :      ### 甜度糖_蔗糖_寡糖  ###
             time.sleep(iocontrolsleep)
             doorB1.output(J34.pin9,0)  
             time.sleep(iocontrolsleep)
@@ -195,7 +194,7 @@ def main():
                     if  bin == "1":
                         break
             Atrain()
-            time.sleep(5)
+            time.sleep(2) #Evan Change to 2
             os.remove("/home/pi/paypaymachine/run/s3A.run")
     with serial.Serial(p2, 57600) as ser2:
         if track == "B":
@@ -221,7 +220,7 @@ def main():
                     if  bin == "1":
                         break
             Btrain()
-            time.sleep(5)
+            time.sleep(2) #Evan Change to 2
             os.remove("/home/pi/paypaymachine/run/s3B.run")
     time.sleep(1)
     os.remove("/home/pi/paypaymachine/run/s3.run")

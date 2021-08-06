@@ -1,9 +1,4 @@
 #!/usr/bin/python3
-
-
-
-
-
 import multiprocessing as mp
 import time
 from jsonrpcserver import method,serve
@@ -21,17 +16,21 @@ def checkSisruning(sta):
     filename = f'./run/{sta}.run'
     if os.path.isfile(filename):
         return True
+    if sta == "s0": #解決爪夾誤開的問題
+       if os.path.isfile("/home/pi/paypaymachine/run/s6.run"):
+          return True
+    if sta == "s6": #解決爪夾誤開的問題
+       if os.path.isfile("/home/pi/paypaymachine/run/s0.run"):
+        return True
     return False
 def getS0o(orderTxt):
     print(orderTxt)
 def getS1o(orderTxt):
     print(orderTxt)
 
-    
 def processA(bitArray,order):
     print(f'A: pid={pid()}')
     while True:
-        
         if order.empty():
             logger.info('A empty')
             time.sleep(1)
@@ -103,14 +102,10 @@ def processB(bitArray,order):
             else:
                 p = subprocess.run(['python3',f'{sta}ta.py',f'B',f'{recp_dic[station_dic[sta]]}',f'{sec}'])
                 print(f'send cmd python3 {sta}.py B {recp_dic[station_dic[sta]]}')
-                logger.info(f'send cmd python3 {sta}.py B {recp_dic[station_dic[sta]]}')   
-                
-                
+                logger.info(f'send cmd python3 {sta}.py B {recp_dic[station_dic[sta]]}')         
         time.sleep(2)
         bitArray[1]=0
         logger.info(f'B:processB-End done {list(bitArray)},order={o}')
-
-
 
 def jsonrpcserver(q):
     @method
