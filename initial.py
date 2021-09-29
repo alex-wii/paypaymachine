@@ -18,6 +18,11 @@ from MoveToStart import Moving
 # pcaR=PCA9675I2C(address=0x27,busnum=1)
 # for pin in range(16):
 #         pcaR.setup(pin,1)
+pcaW18=PCA9675I2C(address=0x18,busnum=1)
+pcaW18_Data = 0xFFFF
+pcaW18_Data=pcaW18.output(J34.pin4,0,pcaW18_Data)  ### 出杯轉盤關閉    ###
+pcaW18_Data=pcaW18.output(J34.pin2,0,pcaW18_Data)  ### 出杯轉盤方向    ###
+
 def I2CWriteBoardID():
     pcaW11=PCA9675I2C(address=0x11,busnum=1)
     pcaW15=PCA9675I2C(address=0x15,busnum=1)

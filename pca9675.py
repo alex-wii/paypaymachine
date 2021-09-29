@@ -33,7 +33,6 @@ class PCA9675I2C(GPIO.BaseGPIO):
         busnum = busnum or i2c.get_default_bus()
         self._device = i2c.get_i2c_device(address, busnum, **kwargs)
         self.num_gpios = num_gpios
-        print('Evan Add')
         if self.num_gpios <= 8:
             self.iodir = 0xFF #self._device.readU8(CONFIG_PORT)
             self.outputvalue = self._device.readRaw8()
@@ -77,9 +76,14 @@ class PCA9675I2C(GPIO.BaseGPIO):
         self.iodir = self._readandchangepin(CONFIG_PORT, pin, mode, self.iodir)
         return self.iodir
 
-    def output(self, pin, value):
+    def output(self, pin, value, portstate):
         #assert self.iodir & (1 << pin) == 0, "Pin %s not set to output" % pin
-        self.outputvalue = self._readandchangepin(OUTPUT_PORT, pin, value, self.outputvalue)
+        #self.outputvalue = self._readandchangepin(OUTPUT_PORT, pin, value, self.outputvalue)
+        
+        newstate = self._changebit(portstate, pin, value)
+        #print(newstate)
+        self._device.write16(OUTPUT_PORT << 1, newstate)
+        self.outputvalue = newstate;
         return self.outputvalue
 
     def input(self, pin):
