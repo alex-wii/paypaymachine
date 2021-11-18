@@ -7,7 +7,13 @@ class J17:
     pin6 = 2
     pin8 = 3
     pin10 = 4
-    
+
+class PCA9535J17:
+    pin2 = 8
+    pin4 = 9
+    pin6 = 10
+    pin8 = 11
+    pin10 = 12
     
 class J33:
     pin2 = 8
@@ -15,6 +21,13 @@ class J33:
     pin6 = 10
     pin8 = 11
     pin10 = 12
+
+class PCA9535J33:
+    pin2 = 0
+    pin4 = 1
+    pin6 = 2
+    pin8 = 3
+    pin10 = 4
     
 class J34:
     pin2 = 13
@@ -22,7 +35,15 @@ class J34:
     pin6 = 14
     pin7 = 6
     pin9 = 15
-    pin10 = 7    
+    pin10 = 7
+
+class PCA9535J34:
+    pin2 = 5
+    pin4 = 13
+    pin6 = 6
+    pin7 = 14
+    pin9 = 7
+    pin10 = 15
 
 class J3:
     pin2 = 4
@@ -56,7 +77,7 @@ class Track:
     PositionEnd = ":0110200200020400000000C7"
     ##YTrackA = ":011020020002040000B02CEB"##451mm
     YTrackA = ":011020020002040000AFC850"##450mm
-    YTrackB = ":01102002000204000061A8BE"
+    YTrackB = ":01102002000204000061085E"##248.4mm
     YTrackEnd = ":011020020002040000E86C73"
     YTrackCup = ":0110200200020400000000C7"
     ZTrackUp = ":0110200200020400000000C7"

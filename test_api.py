@@ -5,7 +5,7 @@ from datetime import datetime
 import time
 def get_api_token():
     print('get_token')
-    url = "http://34.81.78.27/PayPayDrinkBackend/api/auth/login"
+    url = "https://paypaydrink.com/PayPayDrinkBackend/api/auth/login"
 
     payload = "{\r\n    \"account\":\"api\",\r\n    \"password\":\".iaKVMVf_8h_1i9y\"\r\n}"
     headers = { 'Content-Type': 'application/json' }
@@ -18,7 +18,7 @@ def get_api_token():
     
 def checkToken():
 
-    url = f"http://34.81.78.27/PayPayDrinkBackend/api/auth/me?token={payconfiguration.API_TOKEN}"
+    url = f"https://paypaydrink.com/PayPayDrinkBackend/api/auth/me?token={payconfiguration.API_TOKEN}"
     print(url)
     payload={}
     headers = {'Content-Type': 'application/json'}
@@ -28,7 +28,7 @@ def checkToken():
     print(response.text)
     return response.status_code
 def report_cup_num(cup_num):
-    url = f"http://34.81.78.27/PayPayDrinkBackend/api/reportCup?token={payconfiguration.API_TOKEN}"
+    url = f"https://paypaydrink.com/PayPayDrinkBackend/api/reportCup?token={payconfiguration.API_TOKEN}"
     print(url)
     today=datetime.now()
     todayStr=today.strftime('%Y-%m-%d %H:%M:%S')
@@ -54,7 +54,7 @@ def report_cup_num(cup_num):
     print(response.text)
 def report_num2(cup_num):
 
-    url = f"http://34.81.78.27/PayPayDrinkBackend/api/reportCup?token={payconfiguration.API_TOKEN}"
+    url = f"https://paypaydrink.com/PayPayDrinkBackend/api/reportCup?token={payconfiguration.API_TOKEN}"
 
     # payload="{\r\n    \"ip\": \"211.22.7.186\",\r\n    \"date\": \"2021-07-28 11:10:00\",\r\n    \"cupnum\": \"Z9999\"\r\n}"
     payload="{'ip': '211.22.7.186','date': '2021-07-28 11:10:00','cupnum':'Z9999'}"

@@ -4,6 +4,7 @@ import serial
 from time import sleep
 import time
 from jsonrpcserver import method,serve
+import Adafruit_GPIO as GPIO
 import pigpio
 import os
 import sys
@@ -15,16 +16,22 @@ from paypayorder import PayPayOrder
 from PayPayCupOrder import PayPayCupOrder,pay_pay_cup_order_from_dict
 import json
 #import tkinter as tk ## 顯示視窗測試 ##
-from AllConfig import J2,J3,J17,J33,J34,Track
+from AllConfig import J2,J3,J17,PCA9535J17,J33,PCA9535J33,J34,PCA9535J34,Track
 from pca9675 import PCA9675I2C
+from pca9535 import PCA9535I2C
 from test_api import sendAPItoken
+
+IN = GPIO.IN
+OUT = GPIO.OUT
+HIGH = GPIO.HIGH
+LOW = GPIO.LOW
 
 pcaW11=PCA9675I2C(address=0x11,busnum=1)
 pcaW11_Data = 0xFFFF
 pcaW15=PCA9675I2C(address=0x15,busnum=1)
 pcaW15_Data = 0xFFFF
-pcaW18=PCA9675I2C(address=0x18,busnum=1)
-pcaW18_Data = 0xFFFF
+#pcaW18=PCA9675I2C(address=0x18,busnum=1)
+#pcaW18_Data = 0xFFFF
 pcaW1c=PCA9675I2C(address=0x1c,busnum=1)
 pcaW1c_Data = 0xFFFF
 pcaW28=PCA9675I2C(address=0x28,busnum=1)
@@ -36,10 +43,39 @@ pcaW2c_Data = 0xFFFF
 pcaR27=PCA9675I2C(address=0x27,busnum=1)
 pcaR26=PCA9675I2C(address=0x26,busnum=1)
 
-pcaW18_Data=pcaW18.output(J33.pin2,0,pcaW18_Data) ### 冰塊推桿到B ### 防卡冰?
-pcaW18_Data=pcaW18.output(J34.pin4,0,pcaW18_Data)  ### 出杯轉盤關閉    ###
-pcaW18_Data=pcaW18.output(J34.pin2,0,pcaW18_Data)  ### 出杯轉盤方向    ###
-pcaW18_Data=pcaW18.output(J34.pin9,1,pcaW18_Data)  ### 爪夾   ###開爪
+pcaW21=PCA9535I2C(address=0x21,busnum=1)
+##pcaW22=PCA9535I2C(address=0x22,busnum=1)
+##pcaW24=PCA9535I2C(address=0x24,busnum=1)
+
+#config and init
+### 冰塊推桿到B ### 防卡冰?
+pcaW21.config(PCA9535J33.pin2,OUT)
+pcaW21.output(PCA9535J33.pin2,LOW)
+### 出杯轉盤停轉   ###
+pcaW21.config(PCA9535J34.pin4,OUT)
+pcaW21.output(PCA9535J34.pin4,LOW)
+### 出杯轉盤方向    ###
+pcaW21.config(PCA9535J34.pin2,OUT)
+pcaW21.output(PCA9535J34.pin2,LOW)
+### 爪夾 ###開爪
+pcaW21.config(PCA9535J34.pin9,OUT)
+pcaW21.output(PCA9535J34.pin9,HIGH)
+##time.sleep(2)
+###給冰電磁閥關閉###
+pcaW21.config(PCA9535J33.pin4,OUT)
+pcaW21.output(PCA9535J33.pin4,HIGH)
+### A道第一管落杯器關閉  ###
+pcaW21.config(PCA9535J17.pin2,OUT)
+pcaW21.output(PCA9535J17.pin2,HIGH)
+### A道第二管落杯器關閉  ###
+pcaW21.config(PCA9535J17.pin4,OUT)
+pcaW21.output(PCA9535J17.pin4,HIGH)
+### B道第一管落杯器關閉  ###
+pcaW21.config(PCA9535J17.pin6,OUT)
+pcaW21.output(PCA9535J17.pin6,HIGH)
+### B道第二管落杯器關閉  ###
+pcaW21.config(PCA9535J17.pin8,OUT)
+pcaW21.output(PCA9535J17.pin8,HIGH)
 
 PWM_CONTROL_PIN = 13
 PWM_FREQ = 10000
@@ -57,9 +93,6 @@ fa.close()
 fb = open("/home/pi/paypaymachine/sysBrunstate.txt", 'w')
 fb.write("NoRun")
 fb.close()
-#fb = open("/home/pi/paypaymachine/pcaW18_Data.txt", 'w')
-#fb.write(f'{pcaW18_Data}')
-#fb.close()
 
 TrainA = usbpath[Track.ATrainID]
 serA=serial.Serial(TrainA,57600)
@@ -71,6 +104,21 @@ TrackZ = usbpath[Track.ZTrackID]
 serZ=serial.Serial(TrackZ,57600)
 serP=serial.Serial(Printer,57600)
 serP.bytesize=serial.EIGHTBITS
+
+## 熱感印表機設定
+serP.write(b"^Q25,3\r")
+serP.write(b"^W35\r")
+serP.write(b"^H8\r")
+serP.write(b"^P1\r")
+serP.write(b"^S3\r")
+serP.write(b"^AD\r")
+serP.write(b"^C1\r")
+serP.write(b"^R0\r")
+serP.write(b"~Q+0\r")
+serP.write(b"^O0\r")
+serP.write(b"^D1\r")
+serP.write(b"^E28\r")
+serP.write(b"~R255\r")
 
 iocontrolsleep = 0.5
 CleanTimecount = 0
@@ -98,7 +146,6 @@ def CheckTrainB_Cup():
     return False
 
 def AutoClean(modenum):
-    global pcaW18_Data
     global pcaW2c_Data
     global pcaW28_Data
     global pcaW2a_Data
@@ -126,29 +173,30 @@ def AutoClean(modenum):
     f = open("/home/pi/paypaymachine/sysArunstate.txt", 'w')
     f.write('Clean')
     f.close()
-    f = open("/home/pi/paypaymachine/sysBrunstate.txt", 'w')
-    f.write('Clean')
-    f.close()
+    ##f = open("/home/pi/paypaymachine/sysBrunstate.txt", 'w')
+    ##f.write('Clean')
+    ##f.close()
 
     t = time.localtime()
     current_time = time.strftime("%H:%M:%S", t)
     print(current_time)
     hour_time = time.strftime("%H", t)
+    hour_time_int = int(hour_time)
     print(hour_time)
     print('== 定時清潔啟動 ==')
     ## 攪動冰塊 ##
-    pcaW18_Data=pcaW18.output(J33.pin2,0,pcaW18_Data) ### 冰塊推桿到B ###
+    pcaW21.output(PCA9535J33.pin2,LOW) ### 冰塊推桿到B ###
     time.sleep(1)
-    pcaW18_Data=pcaW18.output(J33.pin4,0,pcaW18_Data) ###給冰電磁閥開啟###
+    pcaW21.output(PCA9535J33.pin4,LOW) ###給冰電磁閥開啟###
     time.sleep(1)
-    pcaW18_Data=pcaW18.output(J33.pin4,1,pcaW18_Data) ###給冰電磁閥關閉###
+    pcaW21.output(PCA9535J33.pin4,HIGH) ###給冰電磁閥關閉###
     time.sleep(1)
     ## 牛奶清潔 A道##    
     time.sleep(1)
     pcaW2c_Data=pcaW2c.output(J34.pin7,0,pcaW2c_Data) 
     time.sleep(0.5)
     pcaW28_Data=pcaW28.output(J34.pin7,0,pcaW28_Data)
-    time.sleep(7)
+    time.sleep(8)
     pcaW28_Data=pcaW28.output(J34.pin7,1,pcaW28_Data)
     time.sleep(0.5)
     pcaW2c_Data=pcaW2c.output(J34.pin7,1,pcaW2c_Data)
@@ -162,157 +210,106 @@ def AutoClean(modenum):
     time.sleep(0.5)
     pcaW2a_Data=pcaW2a.output(J34.pin7,1,pcaW2a_Data)
     time.sleep(1)
-    ## 茶液清潔 ## AS4-1
+    ##==============================================
+    if hour_time_int >= 1 and hour_time_int < 10:
+        print('== 時間範圍內不清茶 ==')
+        f = open("/home/pi/paypaymachine/sysArunstate.txt", 'w')
+        f.write('NoRun')
+        f.close()
+        f = open("/home/pi/paypaymachine/sysBrunstate.txt", 'w')
+        f.write('NoRun')
+        f.close()
+        print('== 定時清潔結束 ==')
+        return True
+       
+    ##==============================================
+    ## 茶液清潔 紅茶 ## AS4-1
     pcaW2c_Data=pcaW2c.output(J34.pin4,0,pcaW2c_Data)
     time.sleep(0.5)
     pcaW28_Data=pcaW28.output(J34.pin4,0,pcaW28_Data)
-    if hour_time == "02":##深夜2:00總清排
-        time.sleep(10)
+    if hour_time == "07":##早7:00總清排
+        print('== 總清排 AS4-1 ==')
+        time.sleep(40)
     time.sleep(7)
     pcaW28_Data=pcaW28.output(J34.pin4,1,pcaW28_Data)
     time.sleep(0.5)
     pcaW2c_Data=pcaW2c.output(J34.pin4,1,pcaW2c_Data)
     time.sleep(1)
-    ## 茶液清潔 ## BS4-1
+    ## 茶液清潔 紅茶 ## BS4-1
     pcaW2a_Data=pcaW2a.output(J34.pin4,0,pcaW2a_Data)
     time.sleep(0.5)
     pcaW28_Data=pcaW28.output(J34.pin4,0,pcaW28_Data)
-    if hour_time == "02": ##深夜2:00總清排
-        time.sleep(10)
+    if hour_time == "07": ##早7:00總清排
+        print('== 總清排 AS4-1 ==')
+        time.sleep(40)
     time.sleep(5)
     pcaW28_Data=pcaW28.output(J34.pin4,1,pcaW28_Data)
     time.sleep(0.5)
     pcaW2a_Data=pcaW2a.output(J34.pin4,1,pcaW2a_Data)
     time.sleep(1)
-    ## 茶液清潔 ## AS4-4
+    ##===============================================
+    ## 茶液清潔 青茶 ## AS4-4
     pcaW2c_Data=pcaW2c.output(J34.pin2,0,pcaW2c_Data)
     time.sleep(0.5)
     pcaW28_Data=pcaW28.output(J34.pin2,0,pcaW28_Data)
-    if hour_time == "02":##深夜2:00總清排
-        time.sleep(10)
+    if hour_time == "07":##早7:00總清排
+        print('== 總清排 AS4-4 ==')
+        time.sleep(40)
     time.sleep(7)
     pcaW28_Data=pcaW28.output(J34.pin2,1,pcaW28_Data)
     time.sleep(0.5)
     pcaW2c_Data=pcaW2c.output(J34.pin2,1,pcaW2c_Data)
     time.sleep(1)
-    ## 茶液清潔 ## BS4-4
+    ## 茶液清潔 青茶 ## BS4-4
     pcaW2a_Data=pcaW2a.output(J34.pin2,0,pcaW2a_Data)
     time.sleep(0.5)
     pcaW28_Data=pcaW28.output(J34.pin2,0,pcaW28_Data)
-    if hour_time == "02":##深夜2:00總清排
-        time.sleep(10)
+    if hour_time == "07":##早7:00總清排
+        print('== 總清排 AS4-4 ==')
+        time.sleep(40)
     time.sleep(5)
     pcaW28_Data=pcaW28.output(J34.pin2,1,pcaW28_Data)
     time.sleep(0.5)
     pcaW2a_Data=pcaW2a.output(J34.pin2,1,pcaW2a_Data)
+    ##===============================================
+    ## 茶液清潔 特殊茶 ## AS5-3
+    pcaW2c_Data=pcaW2c.output(J34.pin6,0,pcaW2c_Data)
+    time.sleep(0.5)
+    pcaW28_Data=pcaW28.output(J34.pin6,0,pcaW28_Data)
+    if hour_time == "07":##早7:00總清排
+        print('== 總清排 AS5-3 ==')
+        time.sleep(40)
+    time.sleep(7)
+    pcaW28_Data=pcaW28.output(J34.pin6,1,pcaW28_Data)
+    time.sleep(0.5)
+    pcaW2c_Data=pcaW2c.output(J34.pin6,1,pcaW2c_Data)
+    time.sleep(1)
+    ## 茶液清潔 特殊茶 ## BS5-3
+    pcaW2a_Data=pcaW2a.output(J34.pin6,0,pcaW2a_Data)
+    time.sleep(0.5)
+    pcaW28_Data=pcaW28.output(J34.pin6,0,pcaW28_Data)
+    if hour_time == "07":##早7:00總清排
+        print('== 總清排 AS5-3 ==')
+        time.sleep(40)
+    time.sleep(5)
+    pcaW28_Data=pcaW28.output(J34.pin6,1,pcaW28_Data)
+    time.sleep(0.5)
+    pcaW2a_Data=pcaW2a.output(J34.pin6,1,pcaW2a_Data)
     time.sleep(2)
-
+    
+    ##先讓B道製作飲料，所以先把A道設定成noRun
     f = open("/home/pi/paypaymachine/sysArunstate.txt", 'w')
     f.write('NoRun')
     f.close()
-    f = open("/home/pi/paypaymachine/sysBrunstate.txt", 'w')
-    f.write('NoRun')
-    f.close()
+    print('== 定時清潔結束 ==')
+    time.sleep(2) ## A道多等一些時間
+    ##f = open("/home/pi/paypaymachine/sysBrunstate.txt", 'w')
+    ##f.write('NoRun')
+    ##f.close()
     return True
-
-    ## A.B軌道移到S6位置 避免清管時落在下方線軌上 ##
-    serA.write(bytes(Track.PositionEnd + "\r\n" , "utf-8"))
-    time.sleep(0.1) 
-    serA.write(bytes(Track.Move + "\r\n" , "utf-8"))
-    while True: ## 等待A軌道到位信號 ##
-        serA.flushInput() 
-        serA.write(bytes(Track.CheckSign + "\r\n" , "utf-8"))
-        time.sleep(0.1)
-        address=serA.read(13).decode("utf-8")
-        # print(address)
-        na=address[11:13]
-        # print(na)
-        bc = " ".join(format(ord(c), "b") for c in na)
-        # print(bc,type(bc))
-        if len(bc) == 15:
-            bin=bc[13]
-            # print(bin,type(bin))
-            if  bin == "1":
-                break
-    serB.write(bytes(Track.PositionEnd + "\r\n" , "utf-8"))
-    time.sleep(0.1) 
-    serB.write(bytes(Track.Move + "\r\n" , "utf-8"))
-    while True: ## 等待B軌道到位信號 ##
-        serB.flushInput() 
-        serB.write(bytes(Track.CheckSign + "\r\n" , "utf-8"))
-        time.sleep(0.1)
-        address=serB.read(13).decode("utf-8")
-        # print(address)
-        na=address[11:13]
-        # print(na)
-        bc = " ".join(format(ord(c), "b") for c in na)
-        # print(bc,type(bc))
-        if len(bc) == 15:
-            bin=bc[13]
-            # print(bin,type(bin))
-            if  bin == "1":
-                break
-    if modenum == "GoS6Stop":
-        return True
-    ## 牛奶清潔 A道##    
-    time.sleep(1)
-    pcaW2c_Data=pcaW2c.output(J34.pin7,0,pcaW2c_Data) 
-    time.sleep(0.5)
-    pcaW28_Data=pcaW28.output(J34.pin7,0,pcaW28_Data)
-    time.sleep(5)
-    pcaW28_Data=pcaW28.output(J34.pin7,1,pcaW28_Data)
-    time.sleep(0.5)
-    pcaW2c_Data=pcaW2c.output(J34.pin7,1,pcaW2c_Data)
-    time.sleep(3)
-    ## 牛奶清潔 B道## 
-    pcaW2a_Data=pcaW2a.output(J34.pin7,0,pcaW2a_Data) 
-    time.sleep(0.5)
-    pcaW28_Data=pcaW28.output(J34.pin7,0,pcaW28_Data)
-    time.sleep(5)
-    pcaW28_Data=pcaW28.output(J34.pin7,1,pcaW28_Data)
-    time.sleep(0.5)
-    pcaW2a_Data=pcaW2a.output(J34.pin7,1,pcaW2a_Data)
     
-    #A.B軌道移到S0位置
-    serA.write(bytes(Track.PositionStart + "\r\n" , "utf-8"))
-    time.sleep(0.1) 
-    serA.write(bytes(Track.Move + "\r\n" , "utf-8"))
-    while True: ## 等待A軌道到位信號 ##
-        serA.flushInput() 
-        serA.write(bytes(Track.CheckSign + "\r\n" , "utf-8"))
-        time.sleep(0.1)
-        address=serA.read(13).decode("utf-8")
-        # print(address)
-        na=address[11:13]
-        # print(na)
-        bc = " ".join(format(ord(c), "b") for c in na)
-        # print(bc,type(bc))
-        if len(bc) == 15:
-            bin=bc[13]
-            # print(bin,type(bin))
-            if  bin == "1":
-                break
-    serB.write(bytes(Track.PositionStart + "\r\n" , "utf-8"))
-    time.sleep(0.1) 
-    serB.write(bytes(Track.Move + "\r\n" , "utf-8"))
-    while True: ## 等待B軌道到位信號 ##
-        serB.flushInput() 
-        serB.write(bytes(Track.CheckSign + "\r\n" , "utf-8"))
-        time.sleep(0.1)
-        address=serB.read(13).decode("utf-8")
-        # print(address)
-        na=address[11:13]
-        # print(na)
-        bc = " ".join(format(ord(c), "b") for c in na)
-        # print(bc,type(bc))
-        if len(bc) == 15:
-            bin=bc[13]
-            # print(bin,type(bin))
-            if  bin == "1":
-                break
-    prinit('== 定時清潔結束 ==')
+
 def StationA_S0(track,opentimeStr):
-    global pcaW18_Data
     opentime=int(opentimeStr)
     print('S0 Start')
     if track == "A":
@@ -327,7 +324,7 @@ def StationA_S0(track,opentimeStr):
             SelCupA = 9 ### A道第1管沒有杯子，所以直接用第2管###
             print('A:指定2管: ' f'{SelCupA}')
 
-        if SelCupA < 6: ##pcaR27.input(J3.pin2) != 0 :       ### A道第一管有杯子先用第一管 ###
+        if SelCupA < 7: ##pcaR27.input(J3.pin2) != 0 :       ### A道第一管有杯子先用第一管 ###
             serA.write(bytes(Track.PositionStart + "\r\n" , "utf-8"))
             time.sleep(0.1) 
             serA.write(bytes(Track.Move + "\r\n" , "utf-8"))
@@ -346,18 +343,18 @@ def StationA_S0(track,opentimeStr):
                     # print(bin,type(bin))
                     if  bin == "1":
                         break
-            pcaW18_Data=pcaW18.output(J33.pin2,0,pcaW18_Data) ### 冰塊推桿到B ### 防卡冰?
+            pcaW21.output(PCA9535J33.pin2,LOW) ### 冰塊推桿到B ### 防卡冰?
             time.sleep(0.5)
-            pcaW18_Data=pcaW18.output(J33.pin2,1,pcaW18_Data) ### 冰塊推桿到A ###
+            pcaW21.output(PCA9535J33.pin2,HIGH) ### 冰塊推桿到A ###
             if pcaR27.input(J3.pin8) == 0 : ## A道杯架沒有杯子 ##
-                pcaW18_Data=pcaW18.output(J17.pin2,0,pcaW18_Data) ### A道第一管落杯器動作 ###
+                pcaW21.output(PCA9535J17.pin2,LOW) ### A道第一管落杯器動作 ###
                 time.sleep(0.1)
-                ## pcaW18_Data=pcaW18.output(J33.pin2,1,pcaW18_Data) ### 冰塊推桿到A ###
+                ## pcaW21.output(PCA9535J33.pin2,HIGH) ### 冰塊推桿到A ###
                 while True: ## 等待杯子落下
                     if pcaR27.input(J3.pin8) != 0 :
-                        pcaW18_Data=pcaW18.output(J17.pin2,1,pcaW18_Data)  ### A道第一管落杯器關閉  ###
+                        pcaW21.output(PCA9535J17.pin2,HIGH)  ### A道第一管落杯器關閉  ###
                         break
-        elif SelCupA > 5: ##pcaR27.input(J3.pin5) != 0 : ### A道第二管有杯子 ###
+        elif SelCupA > 6: ##pcaR27.input(J3.pin5) != 0 : ### A道第二管有杯子 ###
             serA.write(bytes(Track.PositionCup2 + "\r\n" , "utf-8"))
             time.sleep(0.1) 
             serA.write(bytes(Track.Move + "\r\n" , "utf-8"))
@@ -376,16 +373,16 @@ def StationA_S0(track,opentimeStr):
                     # print(bin,type(bin))
                     if  bin == "1":
                         break
-            pcaW18_Data=pcaW18.output(J33.pin2,0,pcaW18_Data) ### 冰塊推桿到B ### 防卡冰?
+            pcaW21.output(PCA9535J33.pin2,LOW) ### 冰塊推桿到B ### 防卡冰?
             time.sleep(0.5)
-            pcaW18_Data=pcaW18.output(J33.pin2,1,pcaW18_Data) ### 冰塊推桿到A ###
+            pcaW21.output(PCA9535J33.pin2,HIGH) ### 冰塊推桿到A ###
             if pcaR27.input(J3.pin8) == 0 : ## A道杯架沒有杯子 ##
-                pcaW18_Data=pcaW18.output(J17.pin4,0,pcaW18_Data) ### A道第二管落杯器動作 ###
+                pcaW21.output(PCA9535J17.pin4,LOW) ### A道第二管落杯器動作 ###
                 time.sleep(0.1)
-                ## pcaW18_Data=pcaW18.output(J33.pin2,1,pcaW18_Data) ### 冰塊推桿到A ###
+                ## pcaW21.output(PCA9535J33.pin2,HIGH) ### 冰塊推桿到A ###
                 while True: ## 等待杯子落下
                     if pcaR27.input(J3.pin8) != 0 :
-                        pcaW18_Data=pcaW18.output(J17.pin4,1,pcaW18_Data)  ### A道第二管落杯器關閉  ###
+                        pcaW21.output(PCA9535J17.pin4,HIGH)  ### A道第二管落杯器關閉  ###
                         break
         time.sleep(1)
         serA.write(bytes(Track.PositionIce + "\r\n" , "utf-8")) ## 移動到A道落冰處 ##
@@ -407,15 +404,17 @@ def StationA_S0(track,opentimeStr):
                 if  bin == "1":
                     break
         time.sleep(1)
-        pcaW18_Data=pcaW18.output(J33.pin4,0,pcaW18_Data) ###給冰電磁閥開啟###
-        for i in range(opentime): #Evan 點放出冰
-            time.sleep(0.3)
-            pcaW18_Data=pcaW18.output(J33.pin4,0,pcaW18_Data) ###給冰電磁閥開啟###
-            pcaW18_Data=pcaW18.output(J33.pin2,0,pcaW18_Data) ### 冰塊推桿到B ### 防卡冰?
-            time.sleep(0.3)
-            pcaW18_Data=pcaW18.output(J33.pin2,1,pcaW18_Data) ### 冰塊推桿到A ### 防卡冰?
-            pcaW18_Data=pcaW18.output(J33.pin4,1,pcaW18_Data) ###給冰電磁閥關閉###
-        time.sleep(3) ## 等待冰塊滑落 ##
+        
+        if opentime > 0:
+            pcaW21.output(PCA9535J33.pin4,LOW) ###給冰電磁閥開啟###
+            for i in range(opentime): #Evan 點放出冰
+                time.sleep(0.3)
+                pcaW21.output(PCA9535J33.pin4,LOW) ###給冰電磁閥開啟###
+                pcaW21.output(PCA9535J33.pin2,LOW) ### 冰塊推桿到B ### 防卡冰?
+                time.sleep(0.3)
+                pcaW21.output(PCA9535J33.pin2,HIGH) ### 冰塊推桿到A ### 防卡冰?
+                pcaW21.output(PCA9535J33.pin4,HIGH) ###給冰電磁閥關閉###
+            time.sleep(3) ## 等待冰塊滑落 ##
         print("S0A道做完囉")
     elif track == "B":
         if  pcaR27.input(J2.pin2) != 0 : ### B道第1管有杯子###
@@ -429,7 +428,7 @@ def StationA_S0(track,opentimeStr):
             SelCupB = 9 ### B道第1管沒有杯子，所以直接用第2管###
             print('B:指定2管: ' f'{SelCupB}')
 
-        if SelCupB < 6: ##pcaR27.input(J2.pin2) != 0 : ### B道第一管有杯子先用第一管 ###
+        if SelCupB < 7: ##pcaR27.input(J2.pin2) != 0 : ### B道第一管有杯子先用第一管 ###
             serB.write(bytes(Track.PositionStart + "\r\n" , "utf-8"))
             time.sleep(0.1) 
             serB.write(bytes(Track.Move + "\r\n" , "utf-8"))
@@ -448,16 +447,16 @@ def StationA_S0(track,opentimeStr):
                     # print(bin,type(bin))
                     if  bin == "1":
                         break
-            pcaW18_Data=pcaW18.output(J33.pin2,0,pcaW18_Data) ### 冰塊推桿到B ###
+            pcaW21.output(PCA9535J33.pin2,LOW) ### 冰塊推桿到B ###
             if pcaR27.input(J2.pin8) == 0 : ## B道杯架沒有杯子 ##
-                pcaW18_Data=pcaW18.output(J17.pin6,0,pcaW18_Data) ### B道第一管落杯器動作 ###
+                pcaW21.output(PCA9535J17.pin6,LOW) ### B道第一管落杯器動作 ###
                 time.sleep(0.1)
-                ## pcaW18_Data=pcaW18.output(J33.pin2,0,pcaW18_Data) ### 冰塊推桿到B ###
+                ## pcaW21.output(PCA9535J33.pin2,LOW) ### 冰塊推桿到B ###
                 while True: ## 等待杯子落下
                     if pcaR27.input(J2.pin8) != 0 :
-                        pcaW18_Data=pcaW18.output(J17.pin6,1,pcaW18_Data)  ### B道第一管落杯器關閉  ###
+                        pcaW21.output(PCA9535J17.pin6,HIGH)  ### B道第一管落杯器關閉  ###
                         break
-        elif SelCupB > 5: ##pcaR27.input(J2.pin5) != 0 : ### B道第二管有杯子 ###
+        elif SelCupB > 6: ##pcaR27.input(J2.pin5) != 0 : ### B道第二管有杯子 ###
             serB.write(bytes(Track.PositionCup2 + "\r\n" , "utf-8"))
             time.sleep(0.1) 
             serB.write(bytes(Track.Move + "\r\n" , "utf-8"))
@@ -476,14 +475,14 @@ def StationA_S0(track,opentimeStr):
                     # print(bin,type(bin))
                     if  bin == "1":
                         break
-            pcaW18_Data=pcaW18.output(J33.pin2,0,pcaW18_Data) ### 冰塊推桿到B ###
+            pcaW21.output(PCA9535J33.pin2,LOW) ### 冰塊推桿到B ###
             if pcaR27.input(J2.pin8) == 0 : ## B道杯架沒有杯子 ##
-                pcaW18_Data=pcaW18.output(J17.pin8,0,pcaW18_Data) ### B道第二管落杯器動作 ###
+                pcaW21.output(PCA9535J17.pin8,LOW) ### B道第二管落杯器動作 ###
                 time.sleep(0.1)
-                ## pcaW18_Data=pcaW18.output(J33.pin2,0,pcaW18_Data) ### 冰塊推桿到B ###
+                ## pcaW21.output(PCA9535J33.pin2,LOW) ### 冰塊推桿到B ###
                 while True: ## 等待杯子落下
                     if pcaR27.input(J2.pin8) != 0 :
-                        pcaW18_Data=pcaW18.output(J17.pin8,1,pcaW18_Data)  ### B道第二管落杯器關閉  ###
+                        pcaW21.output(PCA9535J17.pin8,HIGH)  ### B道第二管落杯器關閉  ###
                         break
         time.sleep(1)
         serB.write(bytes(Track.PositionIce + "\r\n" , "utf-8")) ## 移動到B道落冰處 ##
@@ -505,13 +504,14 @@ def StationA_S0(track,opentimeStr):
                 if  bin == "1":
                     break
         time.sleep(1)
-        pcaW18_Data=pcaW18.output(J33.pin4,0,pcaW18_Data) ###給冰電磁閥開啟###
-        for i in range(opentime): #Evan 點放出冰
-            time.sleep(0.3)
-            pcaW18_Data=pcaW18.output(J33.pin4,0,pcaW18_Data) ###給冰電磁閥開啟###
-            time.sleep(0.3)
-            pcaW18_Data=pcaW18.output(J33.pin4,1,pcaW18_Data) ###給冰電磁閥關閉###
-        time.sleep(3) ## 等待冰塊滑落 ##
+        if opentime > 0:
+            pcaW21.output(PCA9535J33.pin4,LOW) ###給冰電磁閥開啟###
+            for i in range(opentime): #Evan 點放出冰
+                time.sleep(0.3)
+                pcaW21.output(PCA9535J33.pin4,LOW) ###給冰電磁閥開啟###
+                time.sleep(0.3)
+                pcaW21.output(PCA9535J33.pin4,HIGH) ###給冰電磁閥關閉###
+            time.sleep(3) ## 等待冰塊滑落 ##
         print("S0B道做完囉")
     print('S0 END')    
 def StationB_S1_Atrain(time1,time2,time3,time4,time5):
@@ -822,7 +822,7 @@ def StationC_S2(track,timedata):
                 if  bin == "1":
                     break
         StationC_S2_Btrain(time1,time2,time3,time4,time5)
-    time.sleep(2)
+    time.sleep(4)
 def StationD_S3_Atrain(time1,time2,time3,time4,time5): 
     global pcaW15_Data
     global pcaW1c_Data
@@ -853,13 +853,13 @@ def StationD_S3_Atrain(time1,time2,time3,time4,time5):
         pcaW2c_Data=doorA1.output(J34.pin7,1,pcaW2c_Data)
     if time3 !=0 :
         time.sleep(iocontrolsleep)
-        pcaW2c_Data=doorA1.output(J17.pin2,0,pcaW2c_Data)
+        pcaW1c_Data=doorA.output(J34.pin7,0,pcaW1c_Data)
         time.sleep(iocontrolsleep)
-        pcaW28_Data=pump1.output(J17.pin2,0,pcaW28_Data)
+        pcaW15_Data=pump.output(J34.pin7,0,pcaW15_Data)
         time.sleep(time3)
-        pcaW28_Data=pump1.output(J17.pin2,1,pcaW28_Data)
+        pcaW15_Data=pump.output(J34.pin7,1,pcaW15_Data)
         time.sleep(iocontrolsleep)
-        pcaW2c_Data=doorA1.output(J17.pin2,1,pcaW2c_Data)
+        pcaW1c_Data=doorA.output(J34.pin7,1,pcaW1c_Data)
     if time4 !=0 :      ### 甜度糖_蔗糖_寡糖  ###
         time.sleep(iocontrolsleep)
         pcaW2c_Data=doorA1.output(J34.pin9,0,pcaW2c_Data)
@@ -909,13 +909,13 @@ def StationD_S3_Btrain(time1,time2,time3,time4,time5):
         pcaW2a_Data=doorB1.output(J34.pin7,1,pcaW2a_Data)
     if time3 !=0 :
         time.sleep(iocontrolsleep)
-        pcaW2a_Data=doorB1.output(J17.pin2,0,pcaW2a_Data)
+        pcaW11_Data=doorB.output(J34.pin7,0,pcaW11_Data)
         time.sleep(iocontrolsleep)
-        pcaW28_Data=pump1.output(J17.pin2,0,pcaW28_Data)
+        pcaW15_Data=pump.output(J34.pin7,0,pcaW15_Data)
         time.sleep(time3)
-        pcaW28_Data=pump1.output(J17.pin2,1,pcaW28_Data)
+        pcaW15_Data=pump.output(J34.pin7,1,pcaW15_Data)
         time.sleep(iocontrolsleep)
-        pcaW2a_Data=doorB1.output(J17.pin2,1,pcaW2a_Data)
+        pcaW11_Data=doorB.output(J34.pin7,1,pcaW11_Data)
     if time4 !=0 :      ### 甜度糖_蔗糖_寡糖  ###
         time.sleep(iocontrolsleep)
         pcaW2a_Data=doorB1.output(J34.pin9,0,pcaW2a_Data)
@@ -1246,12 +1246,21 @@ def StationF_S5(track,timedata,iceSec):
     time4=int(timedata[14:16])
     time5=int(timedata[18:20])
     
-    if iceSec == "02":
+    if iceSec == "01":
+        print('=== 冰塊水量調節01')
+        time4 += 4
+    elif iceSec == "02":
         print('=== 冰塊水量調節02')
-        time4 += 2
+        time4 += 4
+    elif iceSec == "03":
+        print('=== 冰塊水量調節03')
+        time4 += 3
     elif iceSec == "04":
         print('=== 冰塊水量調節04')
         time4 += 2
+    elif iceSec == "05":
+        print('=== 冰塊水量調節05')
+        time4 += 1
     elif iceSec == "06":
         print('=== 冰塊水量調節06')
         time4 += 0
@@ -1300,75 +1309,71 @@ def StationF_S5(track,timedata,iceSec):
         StationF_S5_Btrain(time1,time2,time3,time4,time5)
 
 def StationEnd_S6(track,ordernumber):
-    global pcaW18_Data
-
     print('S6 Start')
-    asciinum = [] 
-    for e in ordernumber:
-        asciinum.append(ord(e))
+    ##asciinum = [] 
+    ##for e in ordernumber:
+    ##    asciinum.append(ord(e))
 
-    if ordernumber[0].isupper() :
-        testcode= 77
-        a0=asciinum[0]-65
-        a1=asciinum[1]-48
-        a2=asciinum[2]-48
-        a3=asciinum[3]-48
-        a4=asciinum[4]-48
-        a5=asciinum[5]-48
-        a6=asciinum[6]-48
+    ##if ordernumber[0].isupper() :
+    ##    testcode= 77
+    ##    a0=asciinum[0]-65
+    ##    a1=asciinum[1]-48
+    ##    a2=asciinum[2]-48
+    ##    a3=asciinum[3]-48
+    ##    a4=asciinum[4]-48
+    ##    a5=asciinum[5]-48
+    ##    a6=asciinum[6]-48
         ##Verificationcode=testcode+a1+a2+a3+a4+a5
-        Verificationcode=testcode+a0+a2+a3+a5+a6
-    else:
-        testcode= 109
-        a0=asciinum[0]-97
-        a1=asciinum[1]-48
-        a2=asciinum[2]-48
-        a3=asciinum[3]-48
-        a4=asciinum[4]-48
-        a5=asciinum[5]-48
-        a6=asciinum[6]-48
+    ##    Verificationcode=testcode+a0+a2+a3+a5+a6
+    ##else:
+    ##    testcode= 109
+    ##    a0=asciinum[0]-97
+    ##    a1=asciinum[1]-48
+    ##    a2=asciinum[2]-48
+    ##    a3=asciinum[3]-48
+    ##    a4=asciinum[4]-48
+    ##    a5=asciinum[5]-48
+    ##    a6=asciinum[6]-48
         ##Verificationcode=testcode+a1+a2+a3+a4+a5
-        Verificationcode=testcode+a0+a2+a3+a5+a6
+    ##    Verificationcode=testcode+a0+a2+a3+a5+a6
     ##============= Print stop ====================== ====================
-    serP.write([2,0,6,1,70,0,0,0,0,77,3])
-    icount = 1
-    while True:
-        PrtReturnValue=serP.read(1).decode("Ascii")
-        print(PrtReturnValue)
-        time.sleep(0.1)
-        icount += 1
-        if PrtReturnValue == "O":
-            break
-        if icount >= 20:
-            break 
+    ##serP.write([2,0,6,1,70,0,0,0,0,77,3])
+    ##icount = 1
+    ##while True:
+    ##    PrtReturnValue=serP.read(1).decode("Ascii")
+    ##    print(PrtReturnValue)
+    ##    time.sleep(0.1)
+    ##    icount += 1
+    ##    if PrtReturnValue == "O":
+    ##        break
+    ##    if icount >= 20:
+    ##        break 
     ## Print == 訂單編號 ======================
-    serP.write([2,0,9,0,61,1,5,asciinum[5],asciinum[6],asciinum[3],asciinum[2],asciinum[0],Verificationcode,3])
-    ##serP.write([2,0,6,0,61,1,2,asciinum[3],asciinum[4],Verificationcode,3])
-    ##serP.write([2,0,9,0,61,1,5,66,48,48,48,49,79,3])
-    icount = 1
-    while True:
-        PrtReturnValue=serP.read(1).decode("Ascii")
-        print(PrtReturnValue)
-        time.sleep(0.1)
-        icount += 1
-        if PrtReturnValue == "O":
-            break
-        if icount >= 20:
-            break
+    ##serP.write([2,0,9,0,61,1,5,asciinum[5],asciinum[6],asciinum[3],asciinum[2],asciinum[0],Verificationcode,3])
+    ##icount = 1
+    ##while True:
+    ##    PrtReturnValue=serP.read(1).decode("Ascii")
+    ##    print(PrtReturnValue)
+    ##    time.sleep(0.1)
+    ##    icount += 1
+    ##    if PrtReturnValue == "O":
+    ##        break
+    ##    if icount >= 20:
+    ##        break
     #print out
-    serP.write([2,0,6,1,70,4,0,0,0,81,3])
-    icount = 1
-    while True:
-        PrtReturnValue=serP.read(1).decode("Ascii")
-        print(PrtReturnValue)
-        time.sleep(0.1)
-        icount += 1
-        if PrtReturnValue == "O":
-            break
-        if icount >= 20:
-            break
+    ##serP.write([2,0,6,1,70,4,0,0,0,81,3])
+    ##icount = 1
+    ##while True:
+    ##    PrtReturnValue=serP.read(1).decode("Ascii")
+    ##    print(PrtReturnValue)
+    ##    time.sleep(0.1)
+    ##    icount += 1
+    ##    if PrtReturnValue == "O":
+    ##        break
+    ##    if icount >= 20:
+    ##        break
     ##===================================================================
-    pcaW18_Data=pcaW18.output(J34.pin9,1,pcaW18_Data) ## 爪夾開啟 ##
+    pcaW21.output(PCA9535J34.pin9,HIGH) ## 爪夾開啟 ##
     if track == "A":
         serA.write(bytes(Track.PositionEnd + "\r\n" , "utf-8"))
         time.sleep(0.1) 
@@ -1467,7 +1472,7 @@ def StationEnd_S6(track,ordernumber):
             if  bin1 == "1":    ### Z道回0位置 ###
                 break
     time.sleep(0.1)
-    pcaW18_Data=pcaW18.output(J34.pin9,0,pcaW18_Data) ## 爪夾閉合 ##
+    pcaW21.output(PCA9535J34.pin9,LOW) ## 爪夾閉合 ##
     time.sleep(1)
     serZ.write(bytes(Track.ZTrackUp + "\r\n" , "utf-8")) ## 夾杯後升起 Z軌 ##
     time.sleep(0.1)
@@ -1527,7 +1532,7 @@ def StationEnd_S6(track,ordernumber):
             if  bin4 == "1": 
                 break
     time.sleep(0.1)
-    pcaW18_Data=pcaW18.output(J34.pin9,1,pcaW18_Data) ## 爪夾開啟 ##
+    pcaW21.output(PCA9535J34.pin9,HIGH) ## 爪夾開啟 ##
     time.sleep(0.1)
     serZ.write(bytes(Track.ZTrackWaitCup + "\r\n" , "utf-8")) ### Z道上至50 ###
     time.sleep(0.1) 
@@ -1560,7 +1565,7 @@ def StationEnd_S6(track,ordernumber):
             if  bin6 == "1":    
                 break
     time.sleep(0.1)
-    pcaW18_Data=pcaW18.output(J34.pin9,0,pcaW18_Data) ## 爪夾關閉 ##
+    pcaW21.output(PCA9535J34.pin9,LOW) ## 爪夾關閉 ##
     time.sleep(1)
     serZ.write(bytes(Track.ZTrackUp + "\r\n" , "utf-8"))### Z道上至0 ###
     time.sleep(0.1) 
@@ -1583,10 +1588,10 @@ def StationEnd_S6(track,ordernumber):
 
     #if pcaR26.input(J3.pin2) != 0 : ##偵測放杯處有杯子##
     #    #while pcaR26.input(J3.pin5) != 0 :   ##偵測進杯處沒有杯子## 
-    #    pcaW18_Data=pcaW18.output(J34.pin4,1,pcaW18_Data) ## 轉盤啟動 ##
+    #    pcaW21.output(PCA9535J34.pin4,HIGH) ## 轉盤啟動 ##
     #    time.sleep(2.9)   ##一個杯子距離### 
-    #    pcaW18_Data=pcaW18.output(J34.pin4,0,pcaW18_Data) ## 轉盤關閉 ##
-    pcaW18_Data=pcaW18.output(J34.pin4,1,pcaW18_Data) ## 轉盤啟動 ##
+    #    pcaW21.output(PCA9535J34.pin4,LOW) ## 轉盤關閉 ##
+    pcaW21.output(PCA9535J34.pin4,HIGH) ## 轉盤啟動 ##
     cupcount = 0
     while True:
         if pcaR26.input(J3.pin5) == 0 :   ###偵測進杯處沒有異物###
@@ -1607,7 +1612,7 @@ def StationEnd_S6(track,ordernumber):
             bin8=bc8[13]
             if  bin8 == "1":    
                 break 
-    #pcaW18_Data=pcaW18.output(J34.pin4,1,pcaW18_Data) ## 轉盤啟動 ##
+    #pcaW21.output(PCA9535J34.pin4,HIGH) ## 轉盤啟動 ##
     #cupcount = 0
     while True:
         if pcaR26.input(J3.pin5) == 0 :   ###偵測進杯處沒有異物###
@@ -1616,7 +1621,7 @@ def StationEnd_S6(track,ordernumber):
             cupcount = 0
         if cupcount >= 3000 :
             break
-    pcaW18_Data=pcaW18.output(J34.pin4,0,pcaW18_Data) ## 轉盤關閉 ##
+    pcaW21.output(PCA9535J34.pin4,LOW) ## 轉盤關閉 ##
     
     if pcaR26.input(J3.pin2) == 0 :
         time.sleep(0.1)
@@ -1638,7 +1643,7 @@ def StationEnd_S6(track,ordernumber):
         print('有飲料杯完成了') ## 出杯sensor偵測到杯子##
     else:
         print('奇怪，怎麼沒有杯子呢')
-    pcaW18_Data=pcaW18.output(J34.pin9,1,pcaW18_Data) ## 爪夾開啟 ##
+    pcaW21.output(PCA9535J34.pin9,HIGH) ## 爪夾開啟 ##
     time.sleep(1)
     serZ.write(bytes(Track.ZTrackUp + "\r\n" , "utf-8")) ### Z道上至0 ###
     time.sleep(0.1) 
@@ -1659,31 +1664,48 @@ def StationEnd_S6(track,ordernumber):
     time.sleep(0.1) 
     serY.write(bytes(Track.Move + "\r\n" , "utf-8"))
     time.sleep(0.1)
-    pcaW18_Data=pcaW18.output(J34.pin4,1,pcaW18_Data) ##轉盤 1啟動,0停止  ##
-    ##time.sleep(0.1) 
-    ## ===== Print Stop ===========
-    ##serP.write([2,0,6,1,70,0,0,0,0,77,3])
-    ##icount = 1
-    ##while True:
-    ##    PrtReturnValue=serP.read(1).decode("Ascii")
-    ##    #print(PrtReturnValue)
-    ##    time.sleep(0.1)
-    ##    icount += 1
-    ##    if PrtReturnValue == "O":
-    ##        break
-    ##    if icount >= 20:
-    ##        break
-    #if track == "A":
-    #    f = open("/home/pi/paypaymachine/sysArunstate.txt", 'w')
-    #    f.write("NoRun1")
-    #    f.close()
-    #elif track == "B":
-    #    f = open("/home/pi/paypaymachine/sysBrunstate.txt", 'w')
-    #    f.write("NoRun1")
-    #    f.close()
-    time.sleep(9)   ### 轉盤轉到客人取杯位置之時間(須測試)  ###
-    pcaW18_Data=pcaW18.output(J34.pin4,0,pcaW18_Data) ##轉盤 1啟動,0停止  ##
-    if ordernumber != "AB000":
+    pcaW21.output(PCA9535J34.pin4,HIGH) ##轉盤 HIGH啟動,LOW停止  ##
+    time.sleep(2)   ### 轉盤轉到印標機位置(須測試)  ###
+    ##Printer##
+    serP.write(b"^L\r")
+    serP.write(b"Dy2-me-dd\r")
+    serP.write(b"Th:m:s\r")
+    serP.write(b"W22,26,5,2,M0,8,4,28,0\r")
+    serP.write(b"https://www.paypaydrink.com\r")
+    array2 = bytearray('配配飲', 'big5') 
+    serP.write(b"AZ1,154,26,2,2,0,0,")
+    serP.write(array2)
+    serP.write(b"\r")
+    array2 = bytearray('取餐編號:', 'big5')
+    serP.write(b"AZ1,18,148,1,2,0,0,")
+    serP.write(array2)
+    serP.write(b"\r") 
+    array2 = bytearray(ordernumber, 'big5')
+    serP.write(b"AZ1,92,148,1,2,0,0,")
+    serP.write(array2)
+    serP.write(b"\r")
+    t = time.localtime()
+    current_time = time.strftime("%Y/%m/%d,%H:%M:%S", t)
+    array2 = bytearray(current_time, 'big5')
+    serP.write(b"AZ1,18,180,1,1,0,0,")
+    serP.write(array2)
+    serP.write(b"\r") 
+    array2 = bytearray('祝 您有個美好', 'big5')
+    serP.write(b"AZ1,146,70,1,2,0,0,")
+    serP.write(array2)
+    serP.write(b"\r")
+    array2 = bytearray(' 的一天', 'big5')
+    serP.write(b"AZ1,146,110,1,2,0,0,")
+    serP.write(array2)
+    serP.write(b"\r")
+    array2 = bytearray('*請搖杯30秒喔*', 'big5')
+    serP.write(b"AZ1,150,148,1,2,0,0,")
+    serP.write(array2)
+    serP.write(b"\r")
+    serP.write(b"E\r")
+    time.sleep(7)   ### 轉盤轉到客人取杯位置之時間(須測試)  ###
+    pcaW21.output(PCA9535J34.pin4,LOW) ##轉盤 HIGH啟動,LOW停止  ##
+    if ordernumber != "0999-02":
          sendAPItoken(ordernumber) ## 回報Server完成 ##
 
 def checkSisruning(sta,Runstate):
@@ -1699,6 +1721,9 @@ def checkSisruning(sta,Runstate):
         if Runstate == "s2":
             return True
     if sta == "s1": 
+        if Runstate == "s3":
+            return True
+    if sta == "s2": 
         if Runstate == "s3":
             return True
     if sta == "s3": 
@@ -1739,6 +1764,9 @@ def processA(bitArray,order,Trainvalue):
             continue
         o=order.get()
         AutoClean('reset')
+        ##f = open("/home/pi/paypaymachine/sysArunstate.txt", 'w')
+        ##f.write('s0')
+        ##f.close()
         #print(o)
         #print(f'{o}')
         #WindosDisplay()
@@ -1748,6 +1776,7 @@ def processA(bitArray,order,Trainvalue):
         recp_dic = {"stationa":o.stationa,"stationb":o.stationb,"stationc":o.stationc,"stationd":o.stationd,"statione":o.statione,"stationf":o.stationf,"endpoint":o.cupnum}
         station_dic = {"s0":"stationa","s1":"stationb","s2":"stationc","s3":"stationd","s4":"statione","s5":"stationf","s6":"endpoint"}
         station = ["s0","s1","s2","s3","s4","s5","s6"]
+
         for sta in station:
             f = open("/home/pi/paypaymachine/sysBrunstate.txt", 'r')
             BRunstate = f.read()
@@ -1811,6 +1840,9 @@ def processB(bitArray,order,Trainvalue):
             continue
 
         o=order.get()
+        ##f = open("/home/pi/paypaymachine/sysBrunstate.txt", 'w')
+        ##f.write('s0')
+        ##f.close()
         #WindosDisplay()
         logger.info(f'B:processB show train AB is available {list(bitArray)},order={o}')
         bitArray[1]=1
@@ -1888,13 +1920,13 @@ def jsonrpcserver(q):
             
     serve(port=9000)
 
-##StationA_S0('B',4)
-##StationB_S1('A','01000212030004000500')###百香1,西柚2,黑糖3,葡萄4,芒果5
-##StationC_S2('A','01000208030004000500')##柳橙1,荔枝2,粉桃3,草莓4,蔓越莓5
-##StationD_S3('A','01000203030004040500')##鳳梨荔枝1,牛奶2,甜度糖第4
-##StationE_S4('B','01000200030004000500')##紅茶1,青茶4
-##StationF_S5('B','01000200030004100500','04')##純水4
-##StationEnd_S6('B','0015-02')
+##StationA_S0('B',5)
+##StationB_S1('A','01000200030004000508')###百香1,西柚2,黑糖3,葡萄4,芒果5
+##StationC_S2('A','01080200030004000500')##柳橙1,荔枝2,粉桃3,草莓4,蔓越莓5
+##StationD_S3('B','01080200030004050500')##鳳梨荔枝1,牛奶2,哈密瓜3,甜度糖第4,
+##StationE_S4('B','01000200030004140500')##紅茶1,青茶4
+##StationF_S5('B','01000200031704000500','05')##特殊茶3,純水4
+##StationEnd_S6('B','0999-02')
 ##AutoClean('manual')
 ##t = time.localtime()
 ##hour_time = time.strftime("%H", t)
@@ -1928,6 +1960,5 @@ if __name__ == '__main__':
     #logger.info('add 5 test order to queue')
     # for i in range(2):
     #      order_queue.put(i)
-    
     aprocess.join()
     bprocess.join()

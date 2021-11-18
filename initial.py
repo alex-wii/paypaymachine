@@ -4,54 +4,56 @@ import serial
 from time import sleep
 import json
 from serial.tools import list_ports
+import Adafruit_GPIO as GPIO
 import time
 import sys
 from pca9675 import PCA9675I2C
-from AllConfig import J34,Track,USBdic
+from pca9535 import PCA9535I2C
+from AllConfig import PCA9535J34,Track,USBdic
 from MoveToStart import Moving
 
-# pcaW18=PCA9675I2C(address=0x18,busnum=1)
-# for i in range(16):
-#     pcaW18.setup(i,0)
-# pcaW18.output(J34.pin9,1)
-# pcaW18.output(J17.pin2,1)
-# pcaR=PCA9675I2C(address=0x27,busnum=1)
-# for pin in range(16):
-#         pcaR.setup(pin,1)
-pcaW18=PCA9675I2C(address=0x18,busnum=1)
-pcaW18_Data = 0xFFFF
-pcaW18_Data=pcaW18.output(J34.pin4,0,pcaW18_Data)  ### 出杯轉盤關閉    ###
-pcaW18_Data=pcaW18.output(J34.pin2,0,pcaW18_Data)  ### 出杯轉盤方向    ###
+IN = GPIO.IN
+OUT = GPIO.OUT
+HIGH = GPIO.HIGH
+LOW = GPIO.LOW
 
-def I2CWriteBoardID():
-    pcaW11=PCA9675I2C(address=0x11,busnum=1)
-    pcaW15=PCA9675I2C(address=0x15,busnum=1)
-    pcaW18=PCA9675I2C(address=0x18,busnum=1)
-    pcaW1c=PCA9675I2C(address=0x1c,busnum=1)
-    pcaW28=PCA9675I2C(address=0x28,busnum=1)
-    pcaW2a=PCA9675I2C(address=0x2a,busnum=1)
-    pcaW2c=PCA9675I2C(address=0x2c,busnum=1)
-    pcaW2e=PCA9675I2C(address=0x2e,busnum=1)
-    for i in range(16):   
-            pcaW11.setup(i,0)
-            pcaW15.setup(i,0)
-            pcaW18.setup(i,0)
-            pcaW1c.setup(i,0)
-            pcaW28.setup(i,0)
-            pcaW2a.setup(i,0)
-            pcaW2c.setup(i,0)
-            pcaW2e.setup(i,0)
-    for i in range(16): 
-            pcaW11.output(i,1)
-            pcaW15.output(i,1)
-            pcaW18.output(i,1)
-            pcaW1c.output(i,1)
-            pcaW28.output(i,1)
-            pcaW2a.output(i,1)
-            pcaW2c.output(i,1)
-            pcaW2e.output(i,1)
-    pcaW18.output(J34.pin2,0)
-    pcaW18.output(J34.pin4,0)
+pcaW21=PCA9535I2C(address=0x21,busnum=1)
+### 出杯轉盤停轉   ###
+pcaW21.config(PCA9535J34.pin2,OUT)
+pcaW21.output(PCA9535J34.pin2,LOW)
+### 出杯轉盤方向    ###
+pcaW21.config(PCA9535J34.pin4,OUT)
+pcaW21.output(PCA9535J34.pin4,LOW)
+
+#def I2CWriteBoardID():
+#    pcaW11=PCA9675I2C(address=0x11,busnum=1)
+#    pcaW15=PCA9675I2C(address=0x15,busnum=1)
+#    pcaW18=PCA9675I2C(address=0x18,busnum=1)
+#    pcaW1c=PCA9675I2C(address=0x1c,busnum=1)
+#    pcaW28=PCA9675I2C(address=0x28,busnum=1)
+#    pcaW2a=PCA9675I2C(address=0x2a,busnum=1)
+#    pcaW2c=PCA9675I2C(address=0x2c,busnum=1)
+#    pcaW2e=PCA9675I2C(address=0x2e,busnum=1)
+#    for i in range(16):   
+#            pcaW11.setup(i,0)
+#            pcaW15.setup(i,0)
+#            pcaW18.setup(i,0)
+#            pcaW1c.setup(i,0)
+#            pcaW28.setup(i,0)
+#            pcaW2a.setup(i,0)
+#            pcaW2c.setup(i,0)
+#            pcaW2e.setup(i,0)
+#    for i in range(16): 
+#            pcaW11.output(i,1)
+#            pcaW15.output(i,1)
+#            pcaW18.output(i,1)
+#            pcaW1c.output(i,1)
+#            pcaW28.output(i,1)
+#            pcaW2a.output(i,1)
+#            pcaW2c.output(i,1)
+#            pcaW2e.output(i,1)
+#    pcaW18.output(J34.pin2,0)
+#    pcaW18.output(J34.pin4,0)
 
             
 def I2CReadBoardID():
@@ -104,11 +106,11 @@ def MoveToStart_B(track_path):
             if  bin == "1":
                 break
     Moving()
-def findPrintby6790(comportlist):
-
+def findPrintby1027(comportlist):
     printerPath=""
-    printerVid=6790
+    printerVid=1027
     for e in comportlist:
+        print(e.vid)
         if e.vid == printerVid:
             printerPath=e.device
             break
@@ -123,17 +125,28 @@ def openserial(track_path):
 
     ser.close()
        
-
 x = list_ports.comports()
 comportlist = []
 print(f'x={x}')
 
-ppath=findPrintby6790(x)
+ppath=findPrintby1027(x)
 print(f'ppath={ppath}')
 
 with serial.Serial(ppath, 57600) as ser2:
-    data = b'\x02\x00\x0A\x00\x35\xE0\x07\x03\x01\x08\x19\x2D\x01\x79\x03' #2016/03/01/08
-    ser2.write(data)
+    ## 熱感印表機設定
+    ser2.write(b"^Q25,3\r")
+    ser2.write(b"^W35\r")
+    ser2.write(b"^H8\r")
+    ser2.write(b"^P1\r")
+    ser2.write(b"^S3\r")
+    ser2.write(b"^AD\r")
+    ser2.write(b"^C1\r")
+    ser2.write(b"^R0\r")
+    ser2.write(b"~Q+0\r")
+    ser2.write(b"^O0\r")
+    ser2.write(b"^D1\r")
+    ser2.write(b"^E28\r")
+    ser2.write(b"~R255\r")
 
 for e in x:
     if "AMA0" in e.device :

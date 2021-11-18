@@ -1,19 +1,24 @@
 import serial
 from time import sleep
 import time
+import Adafruit_GPIO as GPIO
 import pigpio
 import os
 import sys
 import json
-from AllConfig import J2,J3,J17,J33,J34,Track
+from AllConfig import J2,J3,J17,PCA9535J17,J33,PCA9535J33,J34,PCA9535J34,Track
 from pca9675 import PCA9675I2C
+from pca9535 import PCA9535I2C
+
+IN = GPIO.IN
+OUT = GPIO.OUT
+HIGH = GPIO.HIGH
+LOW = GPIO.LOW
 
 pcaW11=PCA9675I2C(address=0x11,busnum=1)
 pcaW11_Data = 0xFFFF
 pcaW15=PCA9675I2C(address=0x15,busnum=1)
 pcaW15_Data = 0xFFFF
-pcaW18=PCA9675I2C(address=0x18,busnum=1)
-pcaW18_Data = 0xFFFF
 pcaW1c=PCA9675I2C(address=0x1c,busnum=1)
 pcaW1c_Data = 0xFFFF
 pcaW28=PCA9675I2C(address=0x28,busnum=1)
@@ -25,9 +30,17 @@ pcaW2c_Data = 0xFFFF
 pcaR27=PCA9675I2C(address=0x27,busnum=1)
 pcaR26=PCA9675I2C(address=0x26,busnum=1)
 
-pcaW18_Data=pcaW18.output(J34.pin4,0,pcaW18_Data)  ### 出杯轉盤關閉    ###
-pcaW18_Data=pcaW18.output(J34.pin2,0,pcaW18_Data)  ### 出杯轉盤方向    ###
-pcaW18_Data=pcaW18.output(J34.pin9,1,pcaW18_Data)  ### 爪夾   ###開爪
+pcaW21=PCA9535I2C(address=0x21,busnum=1)
+
+### 出杯轉盤停轉   ###
+pcaW21.config(PCA9535J34.pin4,OUT)
+pcaW21.output(PCA9535J34.pin4,LOW)
+### 出杯轉盤方向    ###
+pcaW21.config(PCA9535J34.pin2,OUT)
+pcaW21.output(PCA9535J34.pin2,LOW)
+### 爪夾 ###開爪
+pcaW21.config(PCA9535J34.pin9,OUT)
+pcaW21.output(PCA9535J34.pin9,HIGH)
 
 usbpath =''
 with open("/home/pi/paypaymachine/TrackUsb.json", 'r') as obj1:
@@ -191,13 +204,13 @@ def main():
             pcaW2c_Data=doorA1.output(J34.pin7,1,pcaW2c_Data)
         if time3 !=0 :
             time.sleep(iocontrolsleep)
-            pcaW2c_Data=doorA1.output(J17.pin2,0,pcaW2c_Data)
+            pcaW1c_Data=doorA.output(J34.pin7,0,pcaW1c_Data)
             time.sleep(iocontrolsleep)
-            pcaW28_Data=pump1.output(J17.pin2,0,pcaW28_Data)
+            pcaW15_Data=pump.output(J34.pin7,0,pcaW15_Data)
             time.sleep(time3)
-            pcaW28_Data=pump1.output(J17.pin2,1,pcaW28_Data)
+            pcaW15_Data=pump.output(J34.pin7,1,pcaW15_Data)
             time.sleep(iocontrolsleep)
-            pcaW2c_Data=doorA1.output(J17.pin2,1,pcaW2c_Data)
+            pcaW1c_Data=doorA.output(J34.pin7,1,pcaW1c_Data)
         if time4 !=0 :      ### 甜度糖_蔗糖_寡糖  ###
             time.sleep(iocontrolsleep)
             pcaW2c_Data=doorA1.output(J34.pin9,0,pcaW2c_Data)
@@ -438,13 +451,13 @@ def main():
             pcaW2a_Data=doorB1.output(J34.pin7,1,pcaW2a_Data)
         if time3 !=0 :
             time.sleep(iocontrolsleep)
-            pcaW2a_Data=doorB1.output(J17.pin2,0,pcaW2a_Data)
+            pcaW11_Data=doorB.output(J34.pin7,0,pcaW11_Data)
             time.sleep(iocontrolsleep)
-            pcaW28_Data=pump1.output(J17.pin2,0,pcaW28_Data)
+            pcaW15_Data=pump.output(J34.pin7,0,pcaW15_Data)
             time.sleep(time3)
-            pcaW28_Data=pump1.output(J17.pin2,1,pcaW28_Data)
+            pcaW15_Data=pump.output(J34.pin7,1,pcaW15_Data)
             time.sleep(iocontrolsleep)
-            pcaW2a_Data=doorB1.output(J17.pin2,1,pcaW2a_Data)
+            pcaW11_Data=doorB.output(J34.pin7,1,pcaW11_Data)
         if time4 !=0 :      ### 甜度糖_蔗糖_寡糖  ###
             time.sleep(iocontrolsleep)
             pcaW2a_Data=doorB1.output(J34.pin9,0,pcaW2a_Data)
@@ -487,13 +500,13 @@ def main():
             pcaW2a_Data=doorB.output(J17.pin6,1,pcaW2a_Data)
         if time3 !=0 :
             time.sleep(iocontrolsleep)
-            pcaW2a_Data=doorB.output(J17.pin8,0,pcaW2a_Data)
+            pcaW11_Data=doorB.output(J34.pin7,0,pcaW11_Data)
             time.sleep(iocontrolsleep)
-            pcaW28_Data=pump.output(J17.pin8,0,pcaW28_Data)
+            pcaW15_Data=pump1.output(J34.pin7,0,pcaW15_Data)
             time.sleep(time3)
-            pcaW28_Data=pump.output(J17.pin8,1,pcaW28_Data)
+            pcaW15_Data=pump1.output(J34.pin7,1,pcaW15_Data)
             time.sleep(iocontrolsleep)
-            pcaW2a_Data=doorB.output(J17.pin8,1,pcaW2a_Data)
+            pcaW11_Data=doorB.output(J34.pin7,1,pcaW11_Data)
         if time4 !=0 :
             time.sleep(iocontrolsleep)
             pcaW2a_Data=doorB.output(J34.pin2,0,pcaW2a_Data)

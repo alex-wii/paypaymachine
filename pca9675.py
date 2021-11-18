@@ -8,7 +8,7 @@ from AllConfig import J2,J3,J17,J33,J34,Track
 # IE The first config port is 6
 
 INPUT_PORT = 0
-OUTPUT_PORT = 1
+OUTPUT_PORT = 2
 POLARITY_PORT = 2
 CONFIG_PORT = 3
 
